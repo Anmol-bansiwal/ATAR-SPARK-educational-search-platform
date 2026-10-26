@@ -1,0 +1,7 @@
+# Robots.txt for AI-Powered Educational Web Platform Prototype
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://eduquery-ai-prototype.example.com/sitemap.xml
