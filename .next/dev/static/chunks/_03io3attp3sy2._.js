@@ -2354,7 +2354,7 @@ function clearAdminPending() {
     if (t.length < 40) return false;
     if (t.length > 12000) return false;
     const lower = t.toLowerCase();
-    if (/higher school certificate|education standards authority|nsw education|allow about \d+ minutes|attempt questions|total marks|general instructions|section [ivx]+\b.*marks/i.test(lower)) {
+    if (/higher school certificate|education standards authority|nsw education|allow about \d+ minutes|attempt questions|total marks|general instructions|section [ivx]+\b.*marks|office use only|do not write in this area|do not write anything|do not write below this line|blank page|\b\d{8,12}\b/i.test(lower)) {
         return false;
     }
     // Prefer drafts that look numbered like real questions
@@ -2401,7 +2401,7 @@ class ApiError extends Error {
     }
 }
 function getApiBaseUrl() {
-    const url = ("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000';
+    const url = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim();
     return url.replace(/\/+$/, '');
 }
 /** Timeout budgets per endpoint type (ms). */ const TIMEOUTS = {

@@ -1,7 +1,7 @@
 // src/app/api/chat/route.ts
 
-/** Backend verifies the full answer before the first SSE byte — allow ≥45s. */
-const BACKEND_FIRST_BYTE_MS = 45_000;
+/** Backend verifies the full answer before the first SSE byte — allow ≥45s (buffer set to 60s). */
+const BACKEND_FIRST_BYTE_MS = 60_000;
 
 export async function POST(req: Request) {
   let body: Record<string, unknown> = {};
@@ -11,10 +11,9 @@ export async function POST(req: Request) {
     // Empty body fallback
   }
 
-  const backendBaseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(
-    /\/+$/,
-    ''
-  );
+  const backendBaseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000')
+    .trim()
+    .replace(/\/+$/, '');
 
   try {
     const controller = new AbortController();

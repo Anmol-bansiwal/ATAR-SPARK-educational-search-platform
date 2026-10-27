@@ -37,7 +37,7 @@ export class ApiError extends Error {
  * Defaults to http://localhost:3000 (Nest with /api/chat). Override via NEXT_PUBLIC_API_URL.
  */
 export function getApiBaseUrl(): string {
-  const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').trim();
   return url.replace(/\/+$/, '');
 }
 

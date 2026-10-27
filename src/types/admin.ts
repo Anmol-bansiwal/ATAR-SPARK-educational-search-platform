@@ -15,6 +15,15 @@ export type ExtractFigure = {
 export type ExtractDraft = {
   questionText: string;
   pageReference: string;
+  marks?: number | null;
+  marksExplicit?: boolean;
+  formulaLatex?: string[];
+  subject?: string;
+  topic?: string;
+  subtopic?: string | null;
+  difficulty?: ApiDifficulty;
+  questionType?: ApiQuestionType;
+  classificationConfidence?: number;
   figures: ExtractFigure[];
 };
 
@@ -23,6 +32,7 @@ export type ExtractPaperResponse = {
   fileHash: string;
   pageCount: number;
   storageProvider?: string;
+  ocrApplied?: boolean;
   questions: ExtractDraft[];
   unassignedFigures?: ExtractFigure[];
 };
@@ -39,6 +49,11 @@ export type ApprovePaperDraft = {
     questionText: string;
     pageReference: string;
     subtopic?: string | null;
+    figureUrls?: string[];
+    subject?: string | null;
+    topic?: string | null;
+    difficulty?: ApiDifficulty | null;
+    questionType?: ApiQuestionType | null;
   }>;
 };
 
@@ -77,6 +92,9 @@ export type PaperUploadMeta = {
 export type ReviewDraft = ExtractDraft & {
   keep: boolean;
   subtopicOverride: string;
+  topicOverride?: string;
+  difficultyOverride?: ApiDifficulty;
+  questionTypeOverride?: ApiQuestionType;
 };
 
 export type AdminListedQuestion = {
@@ -92,6 +110,7 @@ export type AdminListedQuestion = {
   sourceDocument: string | null;
   fileUrl: string | null;
   pageReference: string | null;
+  figureUrls?: string[];
   embeddingStatus: string;
   createdAt: string;
   updatedAt: string;
