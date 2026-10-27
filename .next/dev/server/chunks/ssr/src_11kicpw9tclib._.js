@@ -871,7 +871,7 @@ class ApiError extends Error {
     }
 }
 function getApiBaseUrl() {
-    const url = ("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000';
+    const url = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim();
     return url.replace(/\/+$/, '');
 }
 /** Timeout budgets per endpoint type (ms). */ const TIMEOUTS = {

@@ -1,10 +1,11 @@
 // src/components/math/markdown-math-renderer.tsx
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { renderScriptsToKatex } from '../../lib/utils';
 
 interface MarkdownMathRendererProps {
   content: string;
@@ -15,6 +16,11 @@ export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
   content,
   className = '',
 }) => {
+  const processedContent = useMemo(
+    () => renderScriptsToKatex(content),
+    [content]
+  );
+
   return (
     <div
       className={`prose-sm sm:prose max-w-full min-w-0 break-words [overflow-wrap:anywhere] text-slate-800 leading-relaxed font-sans ${className}`}
@@ -45,7 +51,7 @@ export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
           ),
         }}
       >
-        {content}
+        {processedContent}
       </ReactMarkdown>
     </div>
   );

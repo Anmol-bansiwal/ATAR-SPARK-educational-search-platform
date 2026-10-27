@@ -67,7 +67,7 @@ function looksLikeExamQuestion(text: string): boolean {
   if (t.length > 12000) return false;
   const lower = t.toLowerCase();
   if (
-    /higher school certificate|education standards authority|nsw education|allow about \d+ minutes|attempt questions|total marks|general instructions|section [ivx]+\b.*marks/i.test(
+    /higher school certificate|education standards authority|nsw education|allow about \d+ minutes|attempt questions|total marks|general instructions|section [ivx]+\b.*marks|office use only|do not write in this area|do not write anything|do not write below this line|blank page|\b\d{8,12}\b/i.test(
       lower
     )
   ) {

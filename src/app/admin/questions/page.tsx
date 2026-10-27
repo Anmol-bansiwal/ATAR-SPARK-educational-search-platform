@@ -205,6 +205,7 @@ export default function AdminQuestionBankPage() {
               sourceDocument: h.sourceDocument ?? null,
               fileUrl: null,
               pageReference: h.pageReference ?? null,
+              figureUrls: h.figureUrls ?? [],
               embeddingStatus: 'READY',
               createdAt: '',
               updatedAt: '',

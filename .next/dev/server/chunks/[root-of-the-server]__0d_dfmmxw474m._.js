@@ -67,7 +67,7 @@ __turbopack_context__.s([
     ()=>POST
 ]);
 // src/app/api/chat/route.ts
-/** Backend verifies the full answer before the first SSE byte — allow ≥45s. */ const BACKEND_FIRST_BYTE_MS = 45_000;
+/** Backend verifies the full answer before the first SSE byte — allow ≥45s (buffer set to 60s). */ const BACKEND_FIRST_BYTE_MS = 60_000;
 async function POST(req) {
     let body = {};
     try {
@@ -75,7 +75,7 @@ async function POST(req) {
     } catch  {
     // Empty body fallback
     }
-    const backendBaseUrl = (("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000').replace(/\/+$/, '');
+    const backendBaseUrl = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim().replace(/\/+$/, '');
     try {
         const controller = new AbortController();
         const connectionTimeout = setTimeout(()=>controller.abort(), BACKEND_FIRST_BYTE_MS);
