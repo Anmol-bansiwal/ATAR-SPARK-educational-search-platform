@@ -87,19 +87,19 @@ function LandingPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$landing$2d$page$2d$background$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LandingPageBackground"], {}, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 84,
+                lineNumber: 85,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
                 className: "relative z-20 w-full pt-4 px-6 md:px-12",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$header$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Header"], {}, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 88,
+                    lineNumber: 89,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 87,
+                lineNumber: 88,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -123,7 +123,7 @@ function LandingPage() {
                                             className: "hidden sm:inline"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 115,
+                                            lineNumber: 116,
                                             columnNumber: 35
                                         }, this),
                                         "Question with",
@@ -138,13 +138,13 @@ function LandingPage() {
                                             children: "AI"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 118,
+                                            lineNumber: 119,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 107,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -161,20 +161,20 @@ function LandingPage() {
                                             className: "hidden md:inline"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 144,
                                             columnNumber: 15
                                         }, this),
                                         "Physics and Chemistry, by topic, year, difficulty or pattern of repetition."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 135,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 100,
+                            lineNumber: 101,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$search$2d$box$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SearchBox"], {
@@ -187,18 +187,18 @@ function LandingPage() {
                             yearOptions: yearOptions
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 149,
+                            lineNumber: 150,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 97,
+                    lineNumber: 98,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 96,
+                lineNumber: 97,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -210,7 +210,7 @@ function LandingPage() {
                             children: "Our Terms"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 164,
+                            lineNumber: 165,
                             columnNumber: 11
                         }, this),
                         " and",
@@ -220,25 +220,25 @@ function LandingPage() {
                             children: "Privacy Policy"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 165,
+                            lineNumber: 166,
                             columnNumber: 11
                         }, this),
                         " in a new window apply. We are an AI and can make mistakes."
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 163,
+                    lineNumber: 164,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 162,
+                lineNumber: 163,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 82,
+        lineNumber: 83,
         columnNumber: 5
     }, this);
 }
@@ -1688,60 +1688,15 @@ class ApiError extends Error {
     }
 }
 function getApiBaseUrl() {
-    const url = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim();
+    const url = (("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000').trim();
     return url.replace(/\/+$/, '');
 }
 /** Timeout budgets per endpoint type (ms). */ const TIMEOUTS = {
     health: 10_000,
     filters: 15_000,
     search: 60_000,
-    answer: 90_000,
-    papers: 120_000
+    answer: 90_000
 };
-/**
- * Multipart fetch for /papers/* — do not set Content-Type (browser sets boundary).
- */ async function requestFormData(endpoint, form, timeoutMs = TIMEOUTS.papers) {
-    const baseUrl = getApiBaseUrl();
-    const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(()=>controller.abort(), timeoutMs);
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: form,
-            signal: controller.signal,
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        });
-        clearTimeout(timeoutId);
-        if (!response.ok) {
-            let errorMessage = `Request failed with status ${response.status}`;
-            try {
-                const errorData = await response.json();
-                const msg = errorData.message;
-                errorMessage = Array.isArray(msg) ? msg.join(', ') : msg || errorData.error || errorMessage;
-            } catch  {
-                errorMessage = response.statusText || errorMessage;
-            }
-            throw new ApiError(errorMessage, response.status);
-        }
-        return await response.json();
-    } catch (error) {
-        clearTimeout(timeoutId);
-        if (error instanceof ApiError) {
-            throw error;
-        }
-        if (error instanceof Error && error.name === 'AbortError') {
-            throw new ApiError(`Request timed out after ${Math.round(timeoutMs / 1000)} seconds. Please try again.`, 408);
-        }
-        if (error instanceof TypeError && error.message.toLowerCase().includes('fetch')) {
-            throw new ApiError('Unable to connect to backend server. Please check your network or server status.', 503);
-        }
-        const message = error instanceof Error ? error.message : 'An unexpected network error occurred.';
-        throw new ApiError(message, 500);
-    }
-}
 function resolvePaperAssetUrl(pathOrUrl) {
     if (!pathOrUrl) return pathOrUrl;
     if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
@@ -1786,7 +1741,8 @@ function resolvePaperAssetUrl(pathOrUrl) {
             let errorMessage = `Request failed with status ${response.status}`;
             try {
                 const errorData = await response.json();
-                errorMessage = errorData.message || errorData.error || errorMessage;
+                const msg = errorData.message;
+                errorMessage = Array.isArray(msg) ? msg[0] || 'Validation error' : msg || errorData.error || errorMessage;
             } catch  {
                 // Body wasn't JSON — fall back to status text
                 errorMessage = response.statusText || errorMessage;
@@ -1857,35 +1813,6 @@ const apiClient = {
             body: JSON.stringify(params),
             signal
         }, TIMEOUTS.answer);
-    },
-    /**
-   * POST /papers/extract — draft questions only (nothing saved).
-   */ async extractPaper (file) {
-        const form = new FormData();
-        form.append('file', file);
-        return requestFormData('/papers/extract', form);
-    },
-    /**
-   * POST /papers/approve — persist + embed (+ Cloudinary when configured).
-   */ async approvePaper (file, draft) {
-        const form = new FormData();
-        form.append('file', file);
-        form.append('draft', JSON.stringify(draft));
-        return requestFormData('/papers/approve', form);
-    },
-    /**
-   * GET /questions/list — admin browse of DB rows (any embedding status).
-   */ async listQuestions (params) {
-        const q = new URLSearchParams();
-        if (params?.subject) q.set('subject', params.subject);
-        if (params?.embeddingStatus) q.set('embeddingStatus', params.embeddingStatus);
-        if (params?.limit != null) q.set('limit', String(params.limit));
-        if (params?.offset != null) q.set('offset', String(params.offset));
-        const qs = q.toString();
-        return request(`/questions/list${qs ? `?${qs}` : ''}`, {
-            method: 'GET',
-            signal: params?.signal
-        }, TIMEOUTS.filters);
     }
 };
 function toRestDifficulty(difficulty) {

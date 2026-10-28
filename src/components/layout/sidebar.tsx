@@ -115,15 +115,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <span>Library</span>
         </button>
-        <Link
-          href="/admin"
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors"
-        >
-          <span className="w-5 h-5 flex items-center justify-center text-[10px] font-bold text-[#2665D9] shrink-0">
-            Ad
-          </span>
-          <span>Admin</span>
-        </Link>
       </div>
 
       {/* Recent chats */}

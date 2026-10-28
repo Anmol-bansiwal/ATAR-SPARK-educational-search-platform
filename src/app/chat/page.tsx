@@ -45,6 +45,7 @@ function getMessageSources(message: UIMessage): {
   filename?: string;
   questionText?: string;
   figureUrls?: string[];
+  mediaType?: string;
 }[] {
   if (!message.parts || message.parts.length === 0) return [];
   return message.parts.flatMap((p) => {
@@ -66,11 +67,17 @@ function getMessageSources(message: UIMessage): {
       typeof meta?.questionText === 'string' && meta.questionText.trim()
         ? meta.questionText.trim()
         : undefined;
+    const mediaType =
+      typeof (p as { mediaType?: unknown }).mediaType === 'string'
+        ? (p as { mediaType: string }).mediaType
+        : undefined;
+
     return [
       {
         sourceId,
         title: typeof p.title === 'string' && p.title.trim() ? p.title : 'Source',
         filename: typeof p.filename === 'string' ? p.filename : undefined,
+        mediaType,
         ...(questionText ? { questionText } : {}),
         ...(figureUrls.length > 0 ? { figureUrls } : {}),
       },
@@ -350,6 +357,7 @@ function ChatPageInner() {
                     content={text}
                     isStreaming={isLast && isLoading}
                     status={message.metadata?.status}
+                    answerOrigin={message.metadata?.answerOrigin}
                     sources={getMessageSources(message)}
                     suggestions={isLast ? message.metadata?.suggestions : undefined}
                     onSuggestionClick={handleSuggestionClick}

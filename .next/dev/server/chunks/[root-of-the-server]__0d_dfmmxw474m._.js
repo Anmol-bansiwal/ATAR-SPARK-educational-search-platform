@@ -75,7 +75,7 @@ async function POST(req) {
     } catch  {
     // Empty body fallback
     }
-    const backendBaseUrl = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim().replace(/\/+$/, '');
+    const backendBaseUrl = (("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000').trim().replace(/\/+$/, '');
     try {
         const controller = new AbortController();
         const connectionTimeout = setTimeout(()=>controller.abort(), BACKEND_FIRST_BYTE_MS);

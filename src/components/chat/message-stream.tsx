@@ -1,16 +1,17 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { Sparkles, Copy, Check } from 'lucide-react';
 import { MarkdownMathRenderer } from '../math/markdown-math-renderer';
 import type { AnswerStatus } from '../../types/question';
-import type { ChatSuggestion } from '../../types/chat';
+import type { ChatSuggestion, AnswerOrigin } from '../../types/chat';
 import { SourceArtifact, type ArtifactSource } from './source-artifact';
 
 interface MessageStreamProps {
   content: string;
   isStreaming?: boolean;
   status?: AnswerStatus;
+  answerOrigin?: AnswerOrigin;
   sources?: ArtifactSource[];
   suggestions?: ChatSuggestion[];
   onSuggestionClick?: (prompt: string) => void;
@@ -23,10 +24,21 @@ const STATUS_LABEL: Record<AnswerStatus, string | null> = {
   guidance: null, // friendly coach reply — no scary banner
 };
 
+function getLabel(answerOrigin?: AnswerOrigin, status?: AnswerStatus): string | null {
+  if (answerOrigin) {
+    if (answerOrigin === 'knowledge_base') return 'Answer from your papers';
+    if (answerOrigin === 'general' || answerOrigin === 'transformed') return 'AI explanation';
+    return null;
+  }
+  if (status) return STATUS_LABEL[status];
+  return null;
+}
+
 export const MessageStream: React.FC<MessageStreamProps> = ({
   content,
   isStreaming = false,
   status,
+  answerOrigin,
   sources = [],
   suggestions = [],
   onSuggestionClick,
@@ -59,7 +71,7 @@ export const MessageStream: React.FC<MessageStreamProps> = ({
     );
   }
 
-  const label = status ? STATUS_LABEL[status] : null;
+  const label = getLabel(answerOrigin, status);
 
   return (
     <div className="w-full max-w-2xl mr-auto space-y-2">

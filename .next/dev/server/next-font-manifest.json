@@ -1,8 +1,5 @@
 {
   "app": {
-    "[project]/src/app/admin/page": [],
-    "[project]/src/app/admin/questions/page": [],
-    "[project]/src/app/admin/review/page": [],
     "[project]/src/app/chat/page": [],
     "[project]/src/app/page": []
   },

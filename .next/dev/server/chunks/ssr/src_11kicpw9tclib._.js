@@ -505,31 +505,6 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
                                 lineNumber: 108,
                                 columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                href: "/admin",
-                                className: "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "w-5 h-5 flex items-center justify-center text-[10px] font-bold text-[#2665D9] shrink-0",
-                                        children: "Ad"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 122,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        children: "Admin"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 125,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 118,
-                                columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
@@ -548,7 +523,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         children: "Recent Chats"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 132,
+                                        lineNumber: 123,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     recentChats.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -565,13 +540,13 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         children: "Clear all"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 136,
+                                        lineNumber: 127,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 131,
+                                lineNumber: 122,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             recentChats.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -579,7 +554,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                 children: "Your conversations will appear here after you ask a question."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 153,
+                                lineNumber: 144,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)) : recentChats.map((chat)=>{
                                 const isActive = chat.id === activeChatId;
@@ -594,7 +569,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                             children: chat.title
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/sidebar.tsx",
-                                            lineNumber: 168,
+                                            lineNumber: 159,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -614,25 +589,25 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                                 className: "w-3.5 h-3.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                                lineNumber: 190,
+                                                lineNumber: 181,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/sidebar.tsx",
-                                            lineNumber: 176,
+                                            lineNumber: 167,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, chat.id, true, {
                                     fileName: "[project]/src/components/layout/sidebar.tsx",
-                                    lineNumber: 160,
+                                    lineNumber: 151,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0));
                             })
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                        lineNumber: 130,
+                        lineNumber: 121,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
@@ -871,60 +846,15 @@ class ApiError extends Error {
     }
 }
 function getApiBaseUrl() {
-    const url = (("TURBOPACK compile-time value", "http://localhost:3001") || 'http://localhost:3000').trim();
+    const url = (("TURBOPACK compile-time value", "https://disown-antihero-secluded.ngrok-free.dev") || 'http://localhost:3000').trim();
     return url.replace(/\/+$/, '');
 }
 /** Timeout budgets per endpoint type (ms). */ const TIMEOUTS = {
     health: 10_000,
     filters: 15_000,
     search: 60_000,
-    answer: 90_000,
-    papers: 120_000
+    answer: 90_000
 };
-/**
- * Multipart fetch for /papers/* — do not set Content-Type (browser sets boundary).
- */ async function requestFormData(endpoint, form, timeoutMs = TIMEOUTS.papers) {
-    const baseUrl = getApiBaseUrl();
-    const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(()=>controller.abort(), timeoutMs);
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: form,
-            signal: controller.signal,
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        });
-        clearTimeout(timeoutId);
-        if (!response.ok) {
-            let errorMessage = `Request failed with status ${response.status}`;
-            try {
-                const errorData = await response.json();
-                const msg = errorData.message;
-                errorMessage = Array.isArray(msg) ? msg.join(', ') : msg || errorData.error || errorMessage;
-            } catch  {
-                errorMessage = response.statusText || errorMessage;
-            }
-            throw new ApiError(errorMessage, response.status);
-        }
-        return await response.json();
-    } catch (error) {
-        clearTimeout(timeoutId);
-        if (error instanceof ApiError) {
-            throw error;
-        }
-        if (error instanceof Error && error.name === 'AbortError') {
-            throw new ApiError(`Request timed out after ${Math.round(timeoutMs / 1000)} seconds. Please try again.`, 408);
-        }
-        if (error instanceof TypeError && error.message.toLowerCase().includes('fetch')) {
-            throw new ApiError('Unable to connect to backend server. Please check your network or server status.', 503);
-        }
-        const message = error instanceof Error ? error.message : 'An unexpected network error occurred.';
-        throw new ApiError(message, 500);
-    }
-}
 function resolvePaperAssetUrl(pathOrUrl) {
     if (!pathOrUrl) return pathOrUrl;
     if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
@@ -969,7 +899,8 @@ function resolvePaperAssetUrl(pathOrUrl) {
             let errorMessage = `Request failed with status ${response.status}`;
             try {
                 const errorData = await response.json();
-                errorMessage = errorData.message || errorData.error || errorMessage;
+                const msg = errorData.message;
+                errorMessage = Array.isArray(msg) ? msg[0] || 'Validation error' : msg || errorData.error || errorMessage;
             } catch  {
                 // Body wasn't JSON — fall back to status text
                 errorMessage = response.statusText || errorMessage;
@@ -1040,35 +971,6 @@ const apiClient = {
             body: JSON.stringify(params),
             signal
         }, TIMEOUTS.answer);
-    },
-    /**
-   * POST /papers/extract — draft questions only (nothing saved).
-   */ async extractPaper (file) {
-        const form = new FormData();
-        form.append('file', file);
-        return requestFormData('/papers/extract', form);
-    },
-    /**
-   * POST /papers/approve — persist + embed (+ Cloudinary when configured).
-   */ async approvePaper (file, draft) {
-        const form = new FormData();
-        form.append('file', file);
-        form.append('draft', JSON.stringify(draft));
-        return requestFormData('/papers/approve', form);
-    },
-    /**
-   * GET /questions/list — admin browse of DB rows (any embedding status).
-   */ async listQuestions (params) {
-        const q = new URLSearchParams();
-        if (params?.subject) q.set('subject', params.subject);
-        if (params?.embeddingStatus) q.set('embeddingStatus', params.embeddingStatus);
-        if (params?.limit != null) q.set('limit', String(params.limit));
-        if (params?.offset != null) q.set('offset', String(params.offset));
-        const qs = q.toString();
-        return request(`/questions/list${qs ? `?${qs}` : ''}`, {
-            method: 'GET',
-            signal: params?.signal
-        }, TIMEOUTS.filters);
     }
 };
 function toRestDifficulty(difficulty) {

@@ -12,12 +12,6 @@ import type {
   DifficultyLevel,
   ApiDifficulty,
 } from '../types/question';
-import type {
-  AdminQuestionListResponse,
-  ApprovePaperDraft,
-  ApprovePaperResponse,
-  ExtractPaperResponse,
-} from '../types/admin';
 
 /**
  * Custom API Error containing HTTP status code and message.
@@ -47,77 +41,8 @@ const TIMEOUTS = {
   filters: 15_000,
   search: 60_000,   // embedding round-trip can be slow on cold OpenAI calls
   answer: 90_000,   // LLM answer generation is slow by nature
-  papers: 120_000,  // PDF extract / approve + Cloudinary
 } as const;
 
-/**
- * Multipart fetch for /papers/* — do not set Content-Type (browser sets boundary).
- */
-async function requestFormData<T>(
-  endpoint: string,
-  form: FormData,
-  timeoutMs: number = TIMEOUTS.papers
-): Promise<T> {
-  const baseUrl = getApiBaseUrl();
-  const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: form,
-      signal: controller.signal,
-      headers: {
-        'ngrok-skip-browser-warning': 'true',
-      },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      let errorMessage = `Request failed with status ${response.status}`;
-      try {
-        const errorData: { message?: string | string[]; error?: string } =
-          await response.json();
-        const msg = errorData.message;
-        errorMessage = Array.isArray(msg)
-          ? msg.join(', ')
-          : msg || errorData.error || errorMessage;
-      } catch {
-        errorMessage = response.statusText || errorMessage;
-      }
-      throw new ApiError(errorMessage, response.status);
-    }
-
-    return (await response.json()) as T;
-  } catch (error: unknown) {
-    clearTimeout(timeoutId);
-
-    if (error instanceof ApiError) {
-      throw error;
-    }
-
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new ApiError(
-        `Request timed out after ${Math.round(timeoutMs / 1000)} seconds. Please try again.`,
-        408
-      );
-    }
-
-    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch')) {
-      throw new ApiError(
-        'Unable to connect to backend server. Please check your network or server status.',
-        503
-      );
-    }
-
-    const message =
-      error instanceof Error ? error.message : 'An unexpected network error occurred.';
-    throw new ApiError(message, 500);
-  }
-}
 
 /** Absolute URL for Nest-relative figure paths from extract. */
 export function resolvePaperAssetUrl(pathOrUrl: string): string {
@@ -174,8 +99,11 @@ async function request<T>(
     if (!response.ok) {
       let errorMessage = `Request failed with status ${response.status}`;
       try {
-        const errorData: { message?: string; error?: string } = await response.json();
-        errorMessage = errorData.message || errorData.error || errorMessage;
+        const errorData: { message?: string | string[]; error?: string } = await response.json();
+        const msg = errorData.message;
+        errorMessage = Array.isArray(msg)
+          ? msg[0] || 'Validation error'
+          : msg || errorData.error || errorMessage;
       } catch {
         // Body wasn't JSON — fall back to status text
         errorMessage = response.statusText || errorMessage;
@@ -286,51 +214,6 @@ export const apiClient = {
         signal,
       },
       TIMEOUTS.answer
-    );
-  },
-
-  /**
-   * POST /papers/extract — draft questions only (nothing saved).
-   */
-  async extractPaper(file: File): Promise<ExtractPaperResponse> {
-    const form = new FormData();
-    form.append('file', file);
-    return requestFormData<ExtractPaperResponse>('/papers/extract', form);
-  },
-
-  /**
-   * POST /papers/approve — persist + embed (+ Cloudinary when configured).
-   */
-  async approvePaper(
-    file: File,
-    draft: ApprovePaperDraft
-  ): Promise<ApprovePaperResponse> {
-    const form = new FormData();
-    form.append('file', file);
-    form.append('draft', JSON.stringify(draft));
-    return requestFormData<ApprovePaperResponse>('/papers/approve', form);
-  },
-
-  /**
-   * GET /questions/list — admin browse of DB rows (any embedding status).
-   */
-  async listQuestions(params?: {
-    subject?: string | null;
-    embeddingStatus?: 'PENDING' | 'READY' | 'FAILED' | null;
-    limit?: number;
-    offset?: number;
-    signal?: AbortSignal;
-  }): Promise<AdminQuestionListResponse> {
-    const q = new URLSearchParams();
-    if (params?.subject) q.set('subject', params.subject);
-    if (params?.embeddingStatus) q.set('embeddingStatus', params.embeddingStatus);
-    if (params?.limit != null) q.set('limit', String(params.limit));
-    if (params?.offset != null) q.set('offset', String(params.offset));
-    const qs = q.toString();
-    return request<AdminQuestionListResponse>(
-      `/questions/list${qs ? `?${qs}` : ''}`,
-      { method: 'GET', signal: params?.signal },
-      TIMEOUTS.filters
     );
   },
 };

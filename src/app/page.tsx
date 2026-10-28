@@ -23,6 +23,7 @@ export default function LandingPage() {
     year: 'All',
   });
 
+
   // Dynamic filter options from GET /questions/filters via TanStack Query
   const { data: filtersData } = useQuestionFilters();
 
