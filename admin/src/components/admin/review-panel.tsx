@@ -65,9 +65,6 @@ export function AdminReviewPanel({
   const [taxonomy, setTaxonomy] = useState<TaxonomyResponse | null>(null);
   const [loadingTaxonomy, setLoadingTaxonomy] = useState(true);
 
-  // Per-question markdown editor preview mode: { [index]: boolean }
-  const [mathPreviews, setMathPreviews] = useState<Record<number, boolean>>({});
-
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ApprovePaperResponse | null>(null);
@@ -112,10 +109,6 @@ export function AdminReviewPanel({
       updateAdminDrafts(next, unassignedFigures);
       return next;
     });
-  };
-
-  const toggleMathPreview = (index: number) => {
-    setMathPreviews((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
   const detachFigureFromDraft = (draftIndex: number, figureIndex: number) => {
@@ -218,7 +211,7 @@ export function AdminReviewPanel({
           ? err.message
           : err instanceof Error
           ? err.message
-          : 'Approve failed. The AI service may be temporarily unavailable.';
+          : 'Unable to approve paper. Please try again.';
       setError(message);
     } finally {
       setBusy(false);
@@ -379,7 +372,6 @@ export function AdminReviewPanel({
       {/* List of Draft Questions */}
       <div className="space-y-4">
         {drafts.map((draft, index) => {
-          const isPreviewing = mathPreviews[index] ?? false;
           const cleanPart = draft.partLabel
             ? draft.partLabel.startsWith('(')
               ? draft.partLabel
@@ -430,7 +422,7 @@ export function AdminReviewPanel({
                   {draft.mathErrors && draft.mathErrors.length > 0 && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
                       <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />
-                      Maths error ({draft.mathErrors.length})
+                      Formula issue ({draft.mathErrors.length})
                     </span>
                   )}
                   <span className="text-[11px] font-medium text-slate-400">
@@ -578,11 +570,12 @@ export function AdminReviewPanel({
                 </div>
               </div>
 
-              {/* Question Maths Editor with Format Maths button, error/warning alerts, and live KaTeX preview */}
+              {/* Question Maths Editor with visual formula editor and preview-first mode */}
               <QuestionMathsEditor
                 value={draft.questionText}
                 onChange={(next) => patchDraft(index, { questionText: next })}
                 initialMathErrors={draft.mathErrors}
+                onMathErrorsChange={(errors) => patchDraft(index, { mathErrors: errors })}
               />
 
               {/* Figures attached to this question per §2.3 */}

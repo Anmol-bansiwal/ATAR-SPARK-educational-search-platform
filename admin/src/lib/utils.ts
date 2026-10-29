@@ -1,11 +1,127 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import katex from 'katex';
 
 /**
  * Utility function to merge Tailwind CSS classes safely
  */
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
+}
+
+/**
+ * Regex matching LaTeX math spans in Markdown:
+ * 1. $$...$$ display math
+ * 2. \[...\] display math
+ * 3. \(...\) inline math
+ * 4. $...$ inline math (ignoring escaped \$)
+ */
+export const ANY_MATH =
+  /(?<!\\)\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([^\n]+?)\\\)|(?<!\\)\$((?:\\\$|[^$\n])+?)\$/g;
+
+/**
+ * Validates all math formulas in questionText using KaTeX client-side (Part D specification).
+ * Matches backend validation 1:1:
+ * - Checks unescaped dollar sign parity.
+ * - Validates each formula using katex.renderToString({ throwOnError: true }).
+ */
+export function validateQuestionMath(text: string): string[] {
+  if (!text || !text.trim()) return [];
+
+  const errors: string[] = [];
+
+  // 1. Check for unclosed $ signs (odd count of unescaped $)
+  let unescapedDollars = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '$') {
+      let backslashes = 0;
+      let j = i - 1;
+      while (j >= 0 && text[j] === '\\') {
+        backslashes++;
+        j--;
+      }
+      if (backslashes % 2 === 0) {
+        unescapedDollars++;
+      }
+    }
+  }
+
+  if (unescapedDollars % 2 !== 0) {
+    errors.push('Odd number of $ signs — a formula is not closed (use \\$ for money)');
+  }
+
+  // 2. Validate all math expressions
+  ANY_MATH.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let formulaIndex = 1;
+
+  while ((match = ANY_MATH.exec(text)) !== null) {
+    const raw = match[0];
+    const isDisplay = raw.startsWith('$$') || raw.startsWith('\\[');
+    const mathBody = (match[1] ?? match[2] ?? match[3] ?? match[4] ?? '').trim();
+
+    if (!mathBody) {
+      errors.push(`Formula ${formulaIndex} is empty`);
+      formulaIndex++;
+      continue;
+    }
+
+    try {
+      katex.renderToString(mathBody, {
+        throwOnError: true,
+        displayMode: isDisplay,
+      });
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Cannot be rendered';
+      const snippet = mathBody.length > 25 ? `${mathBody.slice(0, 25)}…` : mathBody;
+      errors.push(`Formula ${formulaIndex} (${snippet}) cannot be shown: ${errMsg}`);
+    }
+
+    formulaIndex++;
+  }
+
+  return errors;
+}
+
+/**
+ * Locates and replaces a clicked formula in questionText by occurrence index (Part B Section 3 specification).
+ */
+export function replaceFormulaAtOccurrence(
+  questionText: string,
+  targetLatex: string,
+  newLatex: string,
+  isDisplay: boolean,
+  occurrenceIndex: number
+): { success: boolean; text: string } {
+  const trimmedTarget = targetLatex.trim();
+  let match: RegExpExecArray | null;
+  let currentOcc = 0;
+  let targetMatch: RegExpExecArray | null = null;
+
+  ANY_MATH.lastIndex = 0;
+  while ((match = ANY_MATH.exec(questionText)) !== null) {
+    const innerBody = (match[1] ?? match[2] ?? match[3] ?? match[4] ?? '').trim();
+    if (innerBody === trimmedTarget) {
+      if (currentOcc === occurrenceIndex) {
+        targetMatch = match;
+        break;
+      }
+      currentOcc++;
+    }
+  }
+
+  if (!targetMatch) {
+    return { success: false, text: questionText };
+  }
+
+  const replacement = isDisplay
+    ? `\n\n$$${newLatex}$$\n\n`
+    : `$${newLatex}$`;
+
+  const before = questionText.slice(0, targetMatch.index);
+  const after = questionText.slice(targetMatch.index + targetMatch[0].length);
+
+  return { success: true, text: before + replacement + after };
 }
 
 /**
