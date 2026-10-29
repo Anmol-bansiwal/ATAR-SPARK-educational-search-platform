@@ -47,6 +47,26 @@ export type DraftQuestion = {
   pageReference: string;
   pages: number[];
   figures: DraftFigure[];
+  /** Formulas in questionText that cannot render; empty array when valid. */
+  mathErrors?: string[];
+};
+
+export type UncertainMathsItem = {
+  expression: string;
+  note: string;
+};
+
+export type FormattedMathsResponse = {
+  /** Markdown + LaTeX for the editor and live preview. */
+  text: string;
+  /** False when the text had no maths or was already formatted in the same way. */
+  changed: boolean;
+  /** Ambiguous expressions the teacher should double-check in the preview. */
+  uncertain: UncertainMathsItem[];
+  /** Warnings when a comparison sign (<, ≤, >, ≥, =) or number changed. */
+  warnings: string[];
+  /** Formulas that KaTeX cannot render (same check enforced on save). */
+  mathErrors: string[];
 };
 
 // Legacy alias

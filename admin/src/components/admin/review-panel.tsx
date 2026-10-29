@@ -13,7 +13,6 @@ import {
   Code2,
   Eye,
   FileText,
-  Image as ImageIcon,
   Layers,
   Loader2,
   Plus,
@@ -31,6 +30,7 @@ import {
   updateAdminDrafts,
   type AdminPendingSession,
 } from '../../lib/admin-session';
+import { QuestionMathsEditor } from './question-maths-editor';
 import type {
   ApproveDraft,
   ApprovePaperResponse,
@@ -67,7 +67,6 @@ export function AdminReviewPanel({
 
   // Per-question markdown editor preview mode: { [index]: boolean }
   const [mathPreviews, setMathPreviews] = useState<Record<number, boolean>>({});
-  const [showUnassignedTray, setShowUnassignedTray] = useState(true);
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,24 +116,6 @@ export function AdminReviewPanel({
 
   const toggleMathPreview = (index: number) => {
     setMathPreviews((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
-
-  const attachFigureToDraft = (draftIndex: number, figure: DraftFigure) => {
-    setDrafts((prev) => {
-      const next = prev.map((d, i) => {
-        if (i !== draftIndex) return d;
-        const currentFigures = d.figures ?? [];
-        if (currentFigures.length >= 8) return d; // §2.3 max 8 figures
-        return { ...d, figures: [...currentFigures, figure] };
-      });
-      updateAdminDrafts(next);
-      return next;
-    });
-    setUnassignedFigures((prev) =>
-      prev.filter(
-        (f) => !(f.page === figure.page && f.index === figure.index && f.url === figure.url)
-      )
-    );
   };
 
   const detachFigureFromDraft = (draftIndex: number, figureIndex: number) => {
@@ -395,90 +376,6 @@ export function AdminReviewPanel({
         </div>
       </div>
 
-      {/* Unassigned Figures Tray per §2.3 */}
-      {unassignedFigures.length > 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-[#305282]" />
-              <h3 className="text-xs font-bold text-slate-800">
-                Unassigned Figures Tray ({unassignedFigures.length})
-              </h3>
-              <span className="text-[11px] text-slate-400">
-                Logos, formulas, and diagrams unassigned to any specific question stem.
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowUnassignedTray((v) => !v)}
-              className="text-xs text-[#305282] hover:underline"
-            >
-              {showUnassignedTray ? 'Collapse' : 'Expand'}
-            </button>
-          </div>
-
-          {showUnassignedTray && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2 pt-1">
-              {unassignedFigures.map((fig, idx) => {
-                const src = resolvePaperAssetUrl(fig.url);
-                return (
-                  <div
-                    key={`${fig.page}-${fig.index}-${idx}`}
-                    className="shrink-0 rounded-xl border border-slate-200 bg-slate-50 p-2.5 w-44 space-y-2 shadow-2xs"
-                  >
-                    <div className="h-24 w-full rounded-lg bg-white border border-slate-100 flex items-center justify-center overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={src}
-                        alt={`Figure p.${fig.page} #${fig.index}`}
-                        className="max-h-full max-w-full object-contain"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span>p. {fig.page}</span>
-                      {fig.association === 'uncertain' && (
-                        <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
-                          Uncertain
-                        </span>
-                      )}
-                    </div>
-                    <select
-                      className="w-full text-[11px] border border-slate-200 rounded-lg bg-white px-2 py-1 text-slate-700 focus:outline-none"
-                      onChange={(e) => {
-                        const targetIdx = Number(e.target.value);
-                        if (!Number.isNaN(targetIdx)) {
-                          attachFigureToDraft(targetIdx, fig);
-                        }
-                      }}
-                      defaultValue=""
-                    >
-                      <option value="" disabled>
-                        + Attach to Q#...
-                      </option>
-                      {drafts.map((d, dIdx) => {
-                        const dCleanPart = d.partLabel
-                          ? d.partLabel.startsWith('(')
-                            ? d.partLabel
-                            : `(${d.partLabel})`
-                          : '';
-                        const dTitle = d.questionNumber
-                          ? `Q${d.questionNumber}${dCleanPart}`
-                          : `Item #${dIdx + 1}${dCleanPart}`;
-                        return (
-                          <option key={dIdx} value={dIdx}>
-                            {dTitle} (p.{d.pageReference})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
       {/* List of Draft Questions */}
       <div className="space-y-4">
         {drafts.map((draft, index) => {
@@ -530,6 +427,12 @@ export function AdminReviewPanel({
                 </div>
 
                 <div className="flex items-center gap-2">
+                  {draft.mathErrors && draft.mathErrors.length > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                      <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />
+                      Maths error ({draft.mathErrors.length})
+                    </span>
+                  )}
                   <span className="text-[11px] font-medium text-slate-400">
                     {draft.figures?.length ? `${draft.figures.length} diagram${draft.figures.length === 1 ? '' : 's'}` : 'No diagrams'}
                   </span>
@@ -675,55 +578,12 @@ export function AdminReviewPanel({
                 </div>
               </div>
 
-              {/* Editable Markdown Area with Live KaTeX Rendered Preview Beside It */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <label className="text-[11px] font-semibold text-slate-700">
-                      Question Text (Markdown + LaTeX)
-                    </label>
-                    <span className="text-[10px] text-slate-400 hidden sm:inline">
-                      Live KaTeX preview beside editor
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      patchDraft(index, {
-                        questionText: cleanMathQuantities(draft.questionText),
-                      })
-                    }
-                    className="text-[11px] font-medium text-[#305282] hover:underline cursor-pointer"
-                    title="Convert $120\mathrm{g} to 120 g plain text"
-                  >
-                    {'Clean units ($120\\mathrm{g} → 120 g)'}
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
-                  <div>
-                    <span className="block text-[10px] font-medium text-slate-400 mb-1">
-                      Raw Markdown Editor
-                    </span>
-                    <textarea
-                      rows={7}
-                      value={draft.questionText}
-                      onChange={(e) => patchDraft(index, { questionText: e.target.value })}
-                      className="w-full h-44 rounded-xl border border-slate-200 p-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#305282] focus:border-transparent transition-all resize-y"
-                      placeholder="Enter question markdown ($...$ inline math, $$...$$ display math)"
-                    />
-                  </div>
-
-                  <div>
-                    <span className="block text-[10px] font-medium text-slate-400 mb-1">
-                      Live Rendered Preview
-                    </span>
-                    <div className="h-44 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 text-xs font-sans">
-                      <MarkdownMathRenderer content={draft.questionText || '_Empty question text_'} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Question Maths Editor with Format Maths button, error/warning alerts, and live KaTeX preview */}
+              <QuestionMathsEditor
+                value={draft.questionText}
+                onChange={(next) => patchDraft(index, { questionText: next })}
+                initialMathErrors={draft.mathErrors}
+              />
 
               {/* Figures attached to this question per §2.3 */}
               {(draft.figures?.length ?? 0) > 0 && (

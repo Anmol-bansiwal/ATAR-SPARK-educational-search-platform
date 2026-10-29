@@ -826,6 +826,8 @@ __turbopack_context__.s([
     ()=>apiClient,
     "getApiBaseUrl",
     ()=>getApiBaseUrl,
+    "resolveFigureUrl",
+    ()=>resolveFigureUrl,
     "resolvePaperAssetUrl",
     ()=>resolvePaperAssetUrl,
     "toChatFilters",
@@ -861,6 +863,7 @@ function resolvePaperAssetUrl(pathOrUrl) {
     const base = getApiBaseUrl();
     return `${base}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`;
 }
+const resolveFigureUrl = resolvePaperAssetUrl;
 /**
  * Generic fetch wrapper with timeout and structured error extraction.
  *
@@ -936,12 +939,96 @@ const apiClient = {
         }, TIMEOUTS.health);
     },
     /**
-   * GET /questions/filters - Fetch dynamic dropdown options for questions
+   * GET /questions/filters - Fetch dynamic dropdown options for questions.
+   * Robustly normalizes both FRONTEND_GUIDE string-array shapes and FRONTEND_API object-array shapes.
    */ async getFilters (signal) {
-        return request('/questions/filters', {
+        const raw = await request('/questions/filters', {
             method: 'GET',
             signal
         }, TIMEOUTS.filters);
+        const normalizeSubject = (s)=>{
+            if (typeof s === 'string') return {
+                value: s,
+                count: 0
+            };
+            if (s && typeof s === 'object' && 'value' in s) {
+                const item = s;
+                return {
+                    value: String(item.value ?? ''),
+                    count: Number(item.count) || 0
+                };
+            }
+            return {
+                value: String(s ?? ''),
+                count: 0
+            };
+        };
+        const normalizeYear = (y)=>{
+            if (typeof y === 'number') return {
+                value: y,
+                count: 0
+            };
+            if (typeof y === 'string') return {
+                value: parseInt(y, 10) || 0,
+                count: 0
+            };
+            if (y && typeof y === 'object' && 'value' in y) {
+                const item = y;
+                return {
+                    value: Number(item.value) || 0,
+                    count: Number(item.count) || 0
+                };
+            }
+            return {
+                value: 0,
+                count: 0
+            };
+        };
+        const normalizeDifficulty = (d)=>{
+            const rawVal = typeof d === 'string' ? d : d && typeof d === 'object' && 'value' in d ? String(d.value) : 'MEDIUM';
+            const upper = rawVal.toUpperCase();
+            const valid = upper === 'EASY' || upper === 'MEDIUM' || upper === 'HARD' ? upper : 'MEDIUM';
+            const count = d && typeof d === 'object' && 'count' in d ? Number(d.count) || 0 : 0;
+            return {
+                value: valid,
+                count
+            };
+        };
+        const currentYear = new Date().getFullYear();
+        const normalizeTimePeriod = (t)=>{
+            if (typeof t === 'string') {
+                const match = t.match(/(\d+)/);
+                const span = match ? parseInt(match[1], 10) : 0;
+                return {
+                    label: t,
+                    yearFrom: span > 0 ? currentYear - span : 0,
+                    yearTo: currentYear,
+                    count: 0
+                };
+            }
+            if (t && typeof t === 'object' && 'label' in t) {
+                const item = t;
+                return {
+                    label: String(item.label ?? ''),
+                    yearFrom: Number(item.yearFrom) || 0,
+                    yearTo: Number(item.yearTo) || currentYear,
+                    count: Number(item.count) || 0
+                };
+            }
+            return {
+                label: String(t ?? ''),
+                yearFrom: 0,
+                yearTo: currentYear,
+                count: 0
+            };
+        };
+        return {
+            subjects: Array.isArray(raw?.subjects) ? raw.subjects.map(normalizeSubject) : [],
+            years: Array.isArray(raw?.years) ? raw.years.map(normalizeYear) : [],
+            difficulties: Array.isArray(raw?.difficulties) ? raw.difficulties.map(normalizeDifficulty) : [],
+            timePeriods: Array.isArray(raw?.timePeriods) ? raw.timePeriods.map(normalizeTimePeriod) : [],
+            total: typeof raw?.total === 'number' ? raw.total : 0
+        };
     },
     /**
    * POST /questions/search - Semantic vector search for exam questions.

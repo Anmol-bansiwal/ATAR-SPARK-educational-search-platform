@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import {
   AlertTriangle,
-  Code2,
   Edit3,
-  Eye,
   Image as ImageIcon,
   Loader2,
   Trash2,
@@ -23,6 +21,7 @@ import { ApiError, apiClient, resolvePaperAssetUrl } from '../../lib/api-client'
 import { MarkdownMathRenderer } from '../math/markdown-math-renderer';
 import { StatusBadge, DifficultyBadge } from '../ui/status-badge';
 import { AlertBanner } from '../ui/alert-banner';
+import { QuestionMathsEditor } from './question-maths-editor';
 import { cn } from '../../lib/utils';
 
 export function AdminQuestionList({
@@ -288,7 +287,6 @@ function EditQuestionModal({
   const [pageReference, setPageReference] = useState<string>(question.pageReference || '');
   const [questionNumber, setQuestionNumber] = useState<string>(question.questionNumber || '');
   const [partLabel, setPartLabel] = useState<string>(question.partLabel || '');
-  const [previewMarkdown, setPreviewMarkdown] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -496,44 +494,11 @@ function EditQuestionModal({
             </div>
           </div>
 
-          {/* Question Text Editor */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-[11px] font-semibold text-slate-700">
-                Question Text (Markdown + LaTeX)
-              </label>
-              <button
-                type="button"
-                onClick={() => setPreviewMarkdown((v) => !v)}
-                className="text-xs text-[#305282] hover:underline font-medium inline-flex items-center gap-1"
-              >
-                {previewMarkdown ? (
-                  <>
-                    <Code2 className="w-3 h-3" />
-                    Editor
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-3 h-3" />
-                    Preview
-                  </>
-                )}
-              </button>
-            </div>
-            {previewMarkdown ? (
-              <div className="min-h-36 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs font-sans">
-                <MarkdownMathRenderer content={text} />
-              </div>
-            ) : (
-              <textarea
-                rows={6}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 p-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#305282]"
-                required
-              />
-            )}
-          </div>
+          {/* Question Maths Editor with Format Maths button and live preview */}
+          <QuestionMathsEditor
+            value={text}
+            onChange={setText}
+          />
 
           <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
             <button

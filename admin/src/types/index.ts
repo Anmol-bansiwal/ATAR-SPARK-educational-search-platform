@@ -23,6 +23,8 @@ export type {
   DeletedTaxonomyEntry,
   PaperUploadMeta,
   ReviewDraft,
+  UncertainMathsItem,
+  FormattedMathsResponse,
   ExtractFigure,
   ExtractDraft,
   ExtractPaperResponse,

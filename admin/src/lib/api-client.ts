@@ -9,6 +9,7 @@ import type {
   DeleteResult,
   ExtractionJob,
   ExtractResponse,
+  FormattedMathsResponse,
   QuestionPatch,
   TaxonomyEntry,
   TaxonomyResponse,
@@ -74,7 +75,9 @@ async function parseErrorResponse(
     const errorData = await response.json();
     const rawMsg = errorData?.message;
     const message = Array.isArray(rawMsg)
-      ? rawMsg[0] || 'Validation error'
+      ? rawMsg.length > 0
+        ? rawMsg.join('; ')
+        : 'Validation error'
       : typeof rawMsg === 'string'
       ? rawMsg
       : errorData?.error || fallbackMessage;
@@ -312,6 +315,26 @@ export const apiClient = {
     }
 
     throw new ApiError('Extraction timed out while waiting for background processing.', 408);
+  },
+
+  /**
+   * POST /admin/maths/format
+   * Converts plain-text / spoken maths into Markdown + KaTeX ($ and $$).
+   * Verifies comparison signs and numbers. Saves nothing.
+   */
+  async formatMaths(
+    body: { text: string },
+    signal?: AbortSignal
+  ): Promise<FormattedMathsResponse> {
+    return request<FormattedMathsResponse>(
+      '/admin/maths/format',
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+        signal,
+      },
+      TIMEOUTS.papers
+    );
   },
 
   /**
