@@ -20,13 +20,31 @@ export function renderScripts(text: string): string {
 }
 
 /**
- * Converts ^{n} and _{n} script notation from REST responses into KaTeX inline math ($^{n}$ / $_{n}$)
- * so that MarkdownMathRenderer (remark-math + rehype-katex) renders them cleanly.
+ * Normalizes mathematical markdown formatting for KaTeX:
+ * 1. Converts LaTeX bracket notations \[...\] -> $$...$$ and \(...\) -> $...$
+ * 2. Ensures display math $$...$$ delimiters sit on their own lines surrounded by blank lines
+ *    so remark-math parses them as block display math rather than inline math.
+ * Per FRONTEND_GUIDE.md §1 & FRONTEND_API.md §1:
+ * Does NOT rewrite ^{...} or _{...} on Markdown+LaTeX question or chat text because KaTeX handles it.
  */
-export function renderScriptsToKatex(text: string): string {
+export function normalizeMarkdownMath(text: string): string {
   if (!text) return '';
-  return text
-    .replace(/\^\{([^}]{1,8})\}/g, '$^{$1}$')
-    .replace(/_\{([^}]{1,8})\}/g, '$_{$1}$');
+
+  let normalized = text;
+
+  // 1. Convert LaTeX bracket notations: \[ ... \] -> $$ ... $$ and \( ... \) -> $ ... $
+  normalized = normalized.replace(/\\\[([\s\S]*?)\\\]/g, (_, math) => `\n\n$$\n${math.trim()}\n$$\n\n`);
+  normalized = normalized.replace(/\\\(([\s\S]*?)\\\)/g, (_, math) => `$${math.trim()}$`);
+
+  // 2. Normalize display math $$ ... $$ so that $$ sits on its own line surrounded by blank lines
+  normalized = normalized.replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => `\n\n$$\n${math.trim()}\n$$\n\n`);
+
+  return normalized;
 }
 
+/**
+ * Compatibility alias for components that previously imported renderScriptsToKatex
+ */
+export function renderScriptsToKatex(text: string): string {
+  return normalizeMarkdownMath(text);
+}

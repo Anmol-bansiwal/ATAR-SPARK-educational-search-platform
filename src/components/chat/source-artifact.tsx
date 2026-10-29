@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, X } from 'lucide-react';
+import { BookOpen, X } from 'lucide-react';
 import { PaperCard, type PaperCardSource } from './paper-card';
 
 export type ArtifactSource = PaperCardSource;
@@ -12,7 +12,7 @@ interface SourceArtifactProps {
 
 /**
  * Sources artifact: renders expandable PaperCards with full text,
- * KaTeX math rendering, and exam paper diagrams.
+ * KaTeX math rendering, and exam paper diagrams per FRONTEND_GUIDE.md §4.
  */
 export function SourceArtifact({ sources }: SourceArtifactProps) {
   const [open, setOpen] = useState(true);
@@ -31,8 +31,8 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
         onClick={() => setOpen((prev) => !prev)}
         className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-blue-200 hover:text-[#2665D9] transition-colors cursor-pointer select-none"
       >
-        <Box className="w-3.5 h-3.5 text-[#2665D9]" />
-        Sources · {sources.length}
+        <BookOpen className="w-3.5 h-3.5 text-[#2665D9]" />
+        Closest Exam Questions · {sources.length}
         {figureCount > 0
           ? ` · ${figureCount} diagram${figureCount === 1 ? '' : 's'}`
           : ''}
@@ -42,16 +42,16 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
         <div
           className="rounded-2xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.08)] overflow-hidden"
           role="region"
-          aria-label="Exam Paper Sources"
+          aria-label="Closest Exam Questions"
         >
           <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3 bg-slate-50/80">
             <div className="flex items-center gap-2 min-w-0">
               <div className="w-7 h-7 rounded-lg bg-[#2665D9]/10 text-[#2665D9] flex items-center justify-center shrink-0">
-                <Box className="w-3.5 h-3.5" />
+                <BookOpen className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-bold text-slate-900 truncate">
-                  Referenced Exam Questions ({sources.length})
+                  Closest Exam Questions ({sources.length})
                 </p>
                 <p className="text-[10px] text-slate-500 truncate">
                   Full text and original diagrams from cited exam papers
@@ -62,7 +62,7 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
               type="button"
               onClick={() => setOpen(false)}
               className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-200/60 hover:text-slate-800 transition-colors"
-              aria-label="Close sources"
+              aria-label="Close questions panel"
             >
               <X className="w-4 h-4" />
             </button>
@@ -85,4 +85,3 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
     </div>
   );
 }
-

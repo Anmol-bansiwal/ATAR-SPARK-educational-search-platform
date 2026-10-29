@@ -45,7 +45,7 @@ import type {
 import { MarkdownMathRenderer } from '../math/markdown-math-renderer';
 import { AlertBanner } from '../ui/alert-banner';
 import { DifficultyBadge } from '../ui/status-badge';
-import { cn } from '../../lib/utils';
+import { cn, cleanMathQuantities } from '../../lib/utils';
 
 const MAX_APPROVE = 200; // §2.4: 1-200 questions
 
@@ -455,12 +455,21 @@ export function AdminReviewPanel({
                       <option value="" disabled>
                         + Attach to Q#...
                       </option>
-                      {drafts.map((d, dIdx) => (
-                        <option key={dIdx} value={dIdx}>
-                          Q{d.questionNumber || dIdx + 1}
-                          {d.partLabel ? `(${d.partLabel})` : ''} (p.{d.pageReference})
-                        </option>
-                      ))}
+                      {drafts.map((d, dIdx) => {
+                        const dCleanPart = d.partLabel
+                          ? d.partLabel.startsWith('(')
+                            ? d.partLabel
+                            : `(${d.partLabel})`
+                          : '';
+                        const dTitle = d.questionNumber
+                          ? `Q${d.questionNumber}${dCleanPart}`
+                          : `Item #${dIdx + 1}${dCleanPart}`;
+                        return (
+                          <option key={dIdx} value={dIdx}>
+                            {dTitle} (p.{d.pageReference})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 );
@@ -474,8 +483,14 @@ export function AdminReviewPanel({
       <div className="space-y-4">
         {drafts.map((draft, index) => {
           const isPreviewing = mathPreviews[index] ?? false;
-          const displayQNum = draft.questionNumber ? `Q${draft.questionNumber}` : `Item #${index + 1}`;
-          const displayPart = draft.partLabel ? `(${draft.partLabel})` : '';
+          const cleanPart = draft.partLabel
+            ? draft.partLabel.startsWith('(')
+              ? draft.partLabel
+              : `(${draft.partLabel})`
+            : '';
+          const displayTitle = draft.questionNumber
+            ? `Q${draft.questionNumber}${cleanPart}`
+            : `Item #${index + 1}${cleanPart}`;
 
           // Find available subtopics for current topic
           const availableTopics: TaxonomyTopic[] = currentSubject?.topics || [];
@@ -505,7 +520,7 @@ export function AdminReviewPanel({
                       className="w-4 h-4 rounded text-[#305282] focus:ring-[#305282] border-slate-300 cursor-pointer"
                     />
                     <span className="text-sm font-bold text-slate-800">
-                      {displayQNum} {displayPart}
+                      {displayTitle}
                     </span>
                   </label>
                   <span className="text-xs text-slate-400">·</span>
@@ -515,23 +530,9 @@ export function AdminReviewPanel({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => toggleMathPreview(index)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-2xs cursor-pointer"
-                  >
-                    {isPreviewing ? (
-                      <>
-                        <Code2 className="w-3.5 h-3.5" />
-                        Edit Markdown
-                      </>
-                    ) : (
-                      <>
-                        <Eye className="w-3.5 h-3.5 text-[#305282]" />
-                        Rendered Preview
-                      </>
-                    )}
-                  </button>
+                  <span className="text-[11px] font-medium text-slate-400">
+                    {draft.figures?.length ? `${draft.figures.length} diagram${draft.figures.length === 1 ? '' : 's'}` : 'No diagrams'}
+                  </span>
                 </div>
               </div>
 
@@ -674,24 +675,54 @@ export function AdminReviewPanel({
                 </div>
               </div>
 
-              {/* Editable Markdown Area vs Live KaTeX Rendered Preview */}
+              {/* Editable Markdown Area with Live KaTeX Rendered Preview Beside It */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1.5">
-                  Question Text (Markdown + LaTeX)
-                </label>
-                {isPreviewing ? (
-                  <div className="min-h-36 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs font-sans">
-                    <MarkdownMathRenderer content={draft.questionText} />
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <label className="text-[11px] font-semibold text-slate-700">
+                      Question Text (Markdown + LaTeX)
+                    </label>
+                    <span className="text-[10px] text-slate-400 hidden sm:inline">
+                      Live KaTeX preview beside editor
+                    </span>
                   </div>
-                ) : (
-                  <textarea
-                    rows={6}
-                    value={draft.questionText}
-                    onChange={(e) => patchDraft(index, { questionText: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200 p-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#305282] focus:border-transparent transition-all"
-                    placeholder="Enter question markdown ($...$ inline math, $$...$$ display math)"
-                  />
-                )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      patchDraft(index, {
+                        questionText: cleanMathQuantities(draft.questionText),
+                      })
+                    }
+                    className="text-[11px] font-medium text-[#305282] hover:underline cursor-pointer"
+                    title="Convert $120\mathrm{g} to 120 g plain text"
+                  >
+                    {'Clean units ($120\\mathrm{g} → 120 g)'}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
+                  <div>
+                    <span className="block text-[10px] font-medium text-slate-400 mb-1">
+                      Raw Markdown Editor
+                    </span>
+                    <textarea
+                      rows={7}
+                      value={draft.questionText}
+                      onChange={(e) => patchDraft(index, { questionText: e.target.value })}
+                      className="w-full h-44 rounded-xl border border-slate-200 p-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#305282] focus:border-transparent transition-all resize-y"
+                      placeholder="Enter question markdown ($...$ inline math, $$...$$ display math)"
+                    />
+                  </div>
+
+                  <div>
+                    <span className="block text-[10px] font-medium text-slate-400 mb-1">
+                      Live Rendered Preview
+                    </span>
+                    <div className="h-44 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 text-xs font-sans">
+                      <MarkdownMathRenderer content={draft.questionText || '_Empty question text_'} />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Figures attached to this question per §2.3 */}

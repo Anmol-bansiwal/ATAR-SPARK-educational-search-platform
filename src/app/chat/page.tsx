@@ -7,10 +7,9 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { UserMessageCard } from '../../components/chat/user-message-card';
 import { MessageStream } from '../../components/chat/message-stream';
-import { ClosestQuestionsCard } from '../../components/chat/closest-questions-card';
 import { SearchBox } from '../../components/search-box';
 import { Toast, type ToastType } from '../../components/toast';
-import { useQuestionSearch, useQuestionFilters } from '../../hooks/use-questions';
+import { useQuestionFilters } from '../../hooks/use-questions';
 import { toChatFilters } from '../../lib/api-client';
 import {
   createChatId,
@@ -25,6 +24,7 @@ import type {
 } from '../../types/question';
 import { DIFFICULTIES, SUBJECTS } from '../../types/question';
 import type { StoredChatMessage, ChatMetadata } from '../../types/chat';
+import type { PaperCardSource } from '../../components/chat/paper-card';
 
 type ChatMessage = UIMessage<ChatMetadata>;
 
@@ -39,14 +39,7 @@ function getMessageText(message: UIMessage): string {
     .join('');
 }
 
-function getMessageSources(message: UIMessage): {
-  sourceId: string;
-  title: string;
-  filename?: string;
-  questionText?: string;
-  figureUrls?: string[];
-  mediaType?: string;
-}[] {
+function getMessageSources(message: UIMessage): PaperCardSource[] {
   if (!message.parts || message.parts.length === 0) return [];
   return message.parts.flatMap((p) => {
     if (p.type !== 'source-document') return [];
@@ -55,7 +48,11 @@ function getMessageSources(message: UIMessage): {
     const meta = (
       p as {
         providerMetadata?: {
-          edusearch?: { figureUrls?: unknown; questionText?: unknown };
+          edusearch?: {
+            figureUrls?: unknown;
+            questionText?: unknown;
+            questionMarkdown?: unknown;
+          };
         };
       }
     ).providerMetadata?.edusearch;
@@ -67,6 +64,11 @@ function getMessageSources(message: UIMessage): {
       typeof meta?.questionText === 'string' && meta.questionText.trim()
         ? meta.questionText.trim()
         : undefined;
+    const rawMarkdown =
+      meta?.questionMarkdown ??
+      (p as { questionMarkdown?: unknown }).questionMarkdown;
+    const questionMarkdown =
+      typeof rawMarkdown === 'boolean' ? rawMarkdown : true;
     const mediaType =
       typeof (p as { mediaType?: unknown }).mediaType === 'string'
         ? (p as { mediaType: string }).mediaType
@@ -78,6 +80,7 @@ function getMessageSources(message: UIMessage): {
         title: typeof p.title === 'string' && p.title.trim() ? p.title : 'Source',
         filename: typeof p.filename === 'string' ? p.filename : undefined,
         mediaType,
+        questionMarkdown,
         ...(questionText ? { questionText } : {}),
         ...(figureUrls.length > 0 ? { figureUrls } : {}),
       },
@@ -280,51 +283,7 @@ function ChatPageInner() {
     sendMessage({ text: trimmed }, { body: chatBodyFilters() });
   };
 
-  const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user');
-  const lastAiMessage = [...messages].reverse().find((m) => m.role === 'assistant');
   const lastMessageId = messages.length > 0 ? messages[messages.length - 1]?.id : undefined;
-  const lastAssistantStatus = lastAiMessage?.metadata?.status;
-
-  // Closest-questions list follows the latest user query only
-  const latestQueryText = lastUserMessage
-    ? getMessageText(lastUserMessage)
-    : initialQuery;
-
-  // Mirror Nest query-intent: don't hit archive search for greetings /
-  // bare subjects ("maths") / vague study words — ask intent first.
-  const looksLikeGuidanceQuery =
-    /^(?:hi|hey|hello|hola|namaste|yo|sup|hiya|good\s+(?:morning|afternoon|evening)|thanks|thank\s+you|thx|bye|goodbye|ok|okay|cool|nice|help(?:\s+me)?|what\s+can\s+you\s+do|how\s+(?:do\s+you\s+work|does\s+this\s+work)|who\s+are\s+you|what\s+is\s+this|(?:(?:help(?:\s+me)?(?:\s+with)?|about|for)\s+)?(?:maths?|mathematics|math|physics|chemistry|biology|english|science|history|geography|study|studies|exam(?:s)?|paper(?:s)?|homework|questions?|revision|notes?|topics?)(?:\s+(?:please|help|questions?|paper|exam|homework|revision|notes?))?)[\s!.?]*$/i.test(
-      latestQueryText.trim()
-    );
-
-  const {
-    filteredResults,
-    isLoading: isSearchLoading,
-    error: searchError,
-  } = useQuestionSearch(
-    {
-      query: latestQueryText,
-      subject: filters.subject,
-      timePeriod: filters.timePeriod,
-      difficulty: filters.difficulty,
-      year: filters.year,
-    },
-    filtersData?.timePeriods,
-    {
-      enabled:
-        latestQueryText.length > 0 &&
-        lastAssistantStatus !== 'guidance' &&
-        !looksLikeGuidanceQuery,
-      debounceMs: 300,
-      limit: 10,
-    }
-  );
-
-  useEffect(() => {
-    if (searchError) {
-      showToast(searchError.message || 'Failed to retrieve related questions.', 'error');
-    }
-  }, [searchError, showToast]);
 
   const hasConversation = messages.length > 0;
 
@@ -366,14 +325,6 @@ function ChatPageInner() {
               }
               return null;
             })}
-            {/* Hide closest-list for guidance (hey / help) — suggestions are in the reply */}
-            {lastAssistantStatus !== 'guidance' && !looksLikeGuidanceQuery && (
-              <ClosestQuestionsCard
-                questions={filteredResults}
-                isLoading={isSearchLoading}
-                error={searchError}
-              />
-            )}
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center select-none">

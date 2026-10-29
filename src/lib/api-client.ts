@@ -2,6 +2,8 @@
 import type {
   HealthResponse,
   QuestionFiltersResponse,
+  FilterOption,
+  TimePeriodOption,
   QuestionSearchParams,
   QuestionSearchResponse,
   HybridSearchResponse,
@@ -51,6 +53,9 @@ export function resolvePaperAssetUrl(pathOrUrl: string): string {
   const base = getApiBaseUrl();
   return `${base}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`;
 }
+
+/** Specification alias for figure/diagram URL resolution (FRONTEND_GUIDE.md & PAPER_FIGURES.md). */
+export const resolveFigureUrl = resolvePaperAssetUrl;
 
 /**
  * Generic fetch wrapper with timeout and structured error extraction.
@@ -151,14 +156,81 @@ export const apiClient = {
   },
 
   /**
-   * GET /questions/filters - Fetch dynamic dropdown options for questions
+   * GET /questions/filters - Fetch dynamic dropdown options for questions.
+   * Robustly normalizes both FRONTEND_GUIDE string-array shapes and FRONTEND_API object-array shapes.
    */
   async getFilters(signal?: AbortSignal): Promise<QuestionFiltersResponse> {
-    return request<QuestionFiltersResponse>(
+    const raw = await request<Record<string, unknown>>(
       '/questions/filters',
       { method: 'GET', signal },
       TIMEOUTS.filters
     );
+
+    const normalizeSubject = (s: unknown): FilterOption<string> => {
+      if (typeof s === 'string') return { value: s, count: 0 };
+      if (s && typeof s === 'object' && 'value' in s) {
+        const item = s as { value: unknown; count?: unknown };
+        return { value: String(item.value ?? ''), count: Number(item.count) || 0 };
+      }
+      return { value: String(s ?? ''), count: 0 };
+    };
+
+    const normalizeYear = (y: unknown): FilterOption<number> => {
+      if (typeof y === 'number') return { value: y, count: 0 };
+      if (typeof y === 'string') return { value: parseInt(y, 10) || 0, count: 0 };
+      if (y && typeof y === 'object' && 'value' in y) {
+        const item = y as { value: unknown; count?: unknown };
+        return { value: Number(item.value) || 0, count: Number(item.count) || 0 };
+      }
+      return { value: 0, count: 0 };
+    };
+
+    const normalizeDifficulty = (d: unknown): FilterOption<ApiDifficulty> => {
+      const rawVal =
+        typeof d === 'string'
+          ? d
+          : d && typeof d === 'object' && 'value' in d
+            ? String((d as { value: unknown }).value)
+            : 'MEDIUM';
+      const upper = rawVal.toUpperCase();
+      const valid: ApiDifficulty =
+        upper === 'EASY' || upper === 'MEDIUM' || upper === 'HARD' ? upper : 'MEDIUM';
+      const count =
+        d && typeof d === 'object' && 'count' in d ? Number((d as { count: unknown }).count) || 0 : 0;
+      return { value: valid, count };
+    };
+
+    const currentYear = new Date().getFullYear();
+    const normalizeTimePeriod = (t: unknown): TimePeriodOption => {
+      if (typeof t === 'string') {
+        const match = t.match(/(\d+)/);
+        const span = match ? parseInt(match[1], 10) : 0;
+        return {
+          label: t,
+          yearFrom: span > 0 ? currentYear - span : 0,
+          yearTo: currentYear,
+          count: 0,
+        };
+      }
+      if (t && typeof t === 'object' && 'label' in t) {
+        const item = t as { label: unknown; yearFrom?: unknown; yearTo?: unknown; count?: unknown };
+        return {
+          label: String(item.label ?? ''),
+          yearFrom: Number(item.yearFrom) || 0,
+          yearTo: Number(item.yearTo) || currentYear,
+          count: Number(item.count) || 0,
+        };
+      }
+      return { label: String(t ?? ''), yearFrom: 0, yearTo: currentYear, count: 0 };
+    };
+
+    return {
+      subjects: Array.isArray(raw?.subjects) ? raw.subjects.map(normalizeSubject) : [],
+      years: Array.isArray(raw?.years) ? raw.years.map(normalizeYear) : [],
+      difficulties: Array.isArray(raw?.difficulties) ? raw.difficulties.map(normalizeDifficulty) : [],
+      timePeriods: Array.isArray(raw?.timePeriods) ? raw.timePeriods.map(normalizeTimePeriod) : [],
+      total: typeof raw?.total === 'number' ? raw.total : 0,
+    };
   },
 
   /**

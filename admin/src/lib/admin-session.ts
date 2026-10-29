@@ -5,6 +5,7 @@ import type {
   PaperUploadMeta,
   ReviewDraft,
 } from '../types/admin';
+import { cleanMathQuantities } from './utils';
 
 /**
  * In-memory handoff between /admin (upload & extract) and /admin/review (review & approve).
@@ -35,6 +36,7 @@ export function setAdminPending(
     input.drafts ??
     input.extract.questions.map((q) => ({
       ...q,
+      questionText: cleanMathQuantities(q.questionText),
       keep: true,
       topicOverride: q.topic || '',
       subtopicOverride: q.subtopic || '',

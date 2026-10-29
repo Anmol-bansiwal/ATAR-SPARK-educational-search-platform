@@ -58,6 +58,9 @@ export function resolvePaperAssetUrl(pathOrUrl: string): string {
   return `${base}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`;
 }
 
+/** Specification alias for figure/diagram URL resolution (FRONTEND_GUIDE.md & PAPER_FIGURES.md). */
+export const resolveFigureUrl = resolvePaperAssetUrl;
+
 /**
  * Safely parse error message from standard API error response:
  * - 400 validation: message is string[] -> show Array.isArray(message) ? message[0] : message
@@ -565,6 +568,8 @@ export const apiClient = {
 
   /**
    * POST /admin/taxonomy/topics
+   * Permanent convention per backend AdminTaxonomyController:
+   * Body: { subjectId, name, sortOrder? }
    */
   async createTopic(
     body: { subjectId: string; name: string; sortOrder?: number },
@@ -583,6 +588,8 @@ export const apiClient = {
 
   /**
    * POST /admin/taxonomy/subtopics
+   * Permanent convention per backend AdminTaxonomyController:
+   * Body: { topicId, name, sortOrder? }
    */
   async createSubtopic(
     body: { topicId: string; name: string; sortOrder?: number },

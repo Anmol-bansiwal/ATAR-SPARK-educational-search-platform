@@ -91,9 +91,14 @@ export function AdminQuestionList({
               ? q.figureUrls
               : (q.figures || []).map((f) => f.url).filter(Boolean);
 
-          const qNumberStr = q.questionNumber ? `Q${q.questionNumber}` : '';
-          const partLabelStr = q.partLabel ? `(${q.partLabel})` : '';
-          const titleLabel = [qNumberStr, partLabelStr].filter(Boolean).join(' ');
+          const cleanPartLabel = q.partLabel
+            ? q.partLabel.startsWith('(')
+              ? q.partLabel
+              : `(${q.partLabel})`
+            : '';
+          const titleLabel = q.questionNumber
+            ? `Q${q.questionNumber}${cleanPartLabel}`
+            : cleanPartLabel;
 
           return (
             <li

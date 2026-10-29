@@ -10,6 +10,7 @@ export interface PaperCardSource {
   title: string;
   filename?: string;
   questionText?: string;
+  questionMarkdown?: boolean;
   figureUrls?: string[];
   mediaType?: string;
 }
@@ -20,9 +21,11 @@ export type SourceDocumentPart = {
   mediaType?: string;
   title?: string;
   filename?: string;
+  questionMarkdown?: boolean;
   providerMetadata?: {
     edusearch?: {
       questionText?: string | null;
+      questionMarkdown?: boolean;
       figureUrls?: string[];
       fromPaper?: boolean;
     };
@@ -45,6 +48,10 @@ export function PaperCard({ source: sourceProp, part, defaultOpen = false }: Pap
     title: part?.title ?? 'Exam Question',
     filename: part?.filename,
     questionText: part?.providerMetadata?.edusearch?.questionText ?? undefined,
+    questionMarkdown:
+      part?.providerMetadata?.edusearch?.questionMarkdown ??
+      part?.questionMarkdown ??
+      true,
     figureUrls: part?.providerMetadata?.edusearch?.figureUrls ?? [],
     mediaType: part?.mediaType,
   };
@@ -80,9 +87,12 @@ export function PaperCard({ source: sourceProp, part, defaultOpen = false }: Pap
             )}
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-slate-900 truncate">
+            <p
+              className="text-xs font-semibold text-slate-900 truncate"
+              title={`${source.title}${source.filename && !source.title.includes(source.filename) ? ` · ${source.filename}` : ''}`}
+            >
               {source.title}
-              {source.filename ? ` · ${source.filename}` : ''}
+              {source.filename && !source.title.includes(source.filename) ? ` · ${source.filename}` : ''}
             </p>
             {hasFigures ? (
               <p className="text-[10px] text-blue-600 font-medium">
@@ -109,8 +119,14 @@ export function PaperCard({ source: sourceProp, part, defaultOpen = false }: Pap
       {open && (
         <div className="p-4 space-y-3.5 border-t border-slate-100 bg-white">
           {source.questionText && (
-            <div className="text-xs sm:text-sm text-slate-800 leading-relaxed font-sans overflow-x-auto">
-              <MarkdownMathRenderer content={source.questionText} />
+            <div className="text-xs sm:text-sm text-slate-800 leading-relaxed font-sans overflow-x-auto select-text">
+              {source.questionMarkdown !== false ? (
+                <MarkdownMathRenderer content={source.questionText} />
+              ) : (
+                <p className="whitespace-pre-wrap font-sans text-slate-700">
+                  {source.questionText}
+                </p>
+              )}
             </div>
           )}
 
