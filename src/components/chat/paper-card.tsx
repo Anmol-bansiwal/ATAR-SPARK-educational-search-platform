@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, FileText, Image as ImageIcon } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ChevronDown, ChevronUp, FileText, Image as ImageIcon, Layers, Loader2 } from 'lucide-react';
 import { MarkdownMathRenderer } from '../math/markdown-math-renderer';
-import { resolvePaperAssetUrl } from '../../lib/api-client';
+import { apiClient, resolvePaperAssetUrl } from '../../lib/api-client';
+import { extractQuestionPartsMeta } from '../../lib/question-parts';
 
 export interface PaperCardSource {
   sourceId: string;
@@ -13,6 +14,10 @@ export interface PaperCardSource {
   questionMarkdown?: boolean;
   figureUrls?: string[];
   mediaType?: string;
+  card?: string | null;
+  questionNumber?: number | string | null;
+  partLabel?: string | null;
+  sourceDocument?: string | null;
 }
 
 export type SourceDocumentPart = {
@@ -27,7 +32,11 @@ export type SourceDocumentPart = {
       questionText?: string | null;
       questionMarkdown?: boolean;
       figureUrls?: string[];
+      card?: string | null;
       fromPaper?: boolean;
+      questionNumber?: number | string | null;
+      partLabel?: string | null;
+      sourceDocument?: string | null;
     };
   };
 };
@@ -43,9 +52,28 @@ interface PaperCardProps {
  * Implements §2 of the Paper Diagrams specification.
  */
 export function PaperCard({ source: sourceProp, part, defaultOpen = false }: PaperCardProps) {
+  const rawCard = part?.providerMetadata?.edusearch?.card ?? sourceProp?.card;
+  let card: string | null | undefined;
+  let cardTitle: string | undefined;
+
+  if (rawCard === null) {
+    card = null;
+  } else if (typeof rawCard === 'string') {
+    card = rawCard;
+  } else if (rawCard && typeof rawCard === 'object' && 'markdown' in rawCard) {
+    const cardObj = rawCard as { title?: unknown; markdown?: unknown };
+    card = typeof cardObj.markdown === 'string' ? cardObj.markdown : undefined;
+    cardTitle = typeof cardObj.title === 'string' ? cardObj.title : undefined;
+  }
+
+  // Sub-parts merged into a master card have card === null and should be skipped
+  if (card === null) {
+    return null;
+  }
+
   const source: PaperCardSource = sourceProp ?? {
     sourceId: part?.sourceId ?? '',
-    title: part?.title ?? 'Exam Question',
+    title: cardTitle || part?.title || 'Exam Question',
     filename: part?.filename,
     questionText: part?.providerMetadata?.edusearch?.questionText ?? undefined,
     questionMarkdown:
@@ -54,14 +82,80 @@ export function PaperCard({ source: sourceProp, part, defaultOpen = false }: Pap
       true,
     figureUrls: part?.providerMetadata?.edusearch?.figureUrls ?? [],
     mediaType: part?.mediaType,
+    card,
+    questionNumber: part?.providerMetadata?.edusearch?.questionNumber,
+    partLabel: part?.providerMetadata?.edusearch?.partLabel,
+    sourceDocument: part?.providerMetadata?.edusearch?.sourceDocument,
   };
+
+  const meta = useMemo(
+    () =>
+      extractQuestionPartsMeta(
+        source.questionNumber,
+        source.partLabel,
+        source.questionText,
+        source.title
+      ),
+    [source]
+  );
 
   const [open, setOpen] = useState(defaultOpen);
   const [broken, setBroken] = useState<Record<string, true>>({});
+  const [extraParts, setExtraParts] = useState<
+    Array<{ partLabel: string; questionText: string; figureUrls?: string[] }>
+  >([]);
+  const [showExtraParts, setShowExtraParts] = useState(false);
+  const [isFetchingParts, setIsFetchingParts] = useState(false);
+  const [partsFetchMsg, setPartsFetchMsg] = useState<string | null>(null);
+
+  const doc = source.filename || source.sourceDocument;
+
+  const handleToggleOrFetchParts = async () => {
+    if (extraParts.length > 0) {
+      setShowExtraParts((prev) => !prev);
+      return;
+    }
+    if (!meta.questionNumber || !doc || isFetchingParts) return;
+    setIsFetchingParts(true);
+    setPartsFetchMsg(null);
+    try {
+      const siblings = await apiClient.fetchSiblingParts(doc, meta.questionNumber);
+      if (siblings.length > 0) {
+        const parts = siblings.map((s) => {
+          const sMeta = extractQuestionPartsMeta(s.questionNumber, s.partLabel, s.questionText);
+          return {
+            partLabel: sMeta.partLabel || '(main)',
+            questionText: s.questionText,
+            figureUrls: s.figureUrls,
+          };
+        });
+        setExtraParts(parts);
+        setShowExtraParts(true);
+      } else {
+        setPartsFetchMsg(`No additional parts found for Question ${meta.questionNumber} in this paper.`);
+      }
+    } catch (err) {
+      console.error('[PaperCard] Failed to fetch sibling parts:', err);
+      setPartsFetchMsg('Could not load additional parts.');
+    } finally {
+      setIsFetchingParts(false);
+    }
+  };
+
+  const allPartsLabel = useMemo(() => {
+    if (extraParts.length === 0) return '';
+    return extraParts
+      .map((p) => p.partLabel.replace(/[()]/g, ''))
+      .filter((l) => l !== 'main')
+      .join(', ');
+  }, [extraParts]);
+
+  const contentToRender = source.card || source.questionText;
 
   const rawFigures = source.figureUrls ?? [];
   const figures = rawFigures
     .filter((url) => typeof url === 'string' && url.trim().length > 0 && !broken[url])
+    .filter((url) => !contentToRender || !contentToRender.includes(url))
     .slice(0, 8);
 
   const hasFigures = figures.length > 0;
@@ -118,15 +212,62 @@ export function PaperCard({ source: sourceProp, part, defaultOpen = false }: Pap
 
       {open && (
         <div className="p-4 space-y-3.5 border-t border-slate-100 bg-white">
-          {source.questionText && (
+          {contentToRender && (
             <div className="text-xs sm:text-sm text-slate-800 leading-relaxed font-sans overflow-x-auto select-text">
-              {source.questionMarkdown !== false ? (
-                <MarkdownMathRenderer content={source.questionText} />
+              {source.card || source.questionMarkdown !== false ? (
+                <MarkdownMathRenderer content={contentToRender} />
               ) : (
                 <p className="whitespace-pre-wrap font-sans text-slate-700">
-                  {source.questionText}
+                  {contentToRender}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Action button to view all parts if question has parts or questionNumber */}
+          {meta.questionNumber && doc && !source.card && (
+            <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 select-none">
+              <button
+                type="button"
+                disabled={isFetchingParts}
+                onClick={handleToggleOrFetchParts}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100/70 text-[#155dfc] text-xs font-semibold shadow-2xs transition-all cursor-pointer disabled:opacity-60"
+              >
+                {isFetchingParts ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Layers className="w-3.5 h-3.5" />
+                )}
+                <span>
+                  {isFetchingParts
+                    ? `Loading parts of Question ${meta.questionNumber}...`
+                    : showExtraParts
+                    ? `Hide additional parts of Question ${meta.questionNumber}`
+                    : `View all parts of Question ${meta.questionNumber}${allPartsLabel ? ` (${allPartsLabel})` : ''}`}
+                </span>
+              </button>
+              {partsFetchMsg && (
+                <span className="text-[11px] text-slate-400 italic">{partsFetchMsg}</span>
+              )}
+            </div>
+          )}
+
+          {/* Expanded extra parts */}
+          {showExtraParts && extraParts.length > 0 && (
+            <div className="space-y-3 pt-2">
+              {extraParts.map((p, idx) => (
+                <div
+                  key={idx}
+                  className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 space-y-2"
+                >
+                  <span className="px-2 py-0.5 rounded-md bg-blue-100 text-[#155dfc] font-bold text-xs">
+                    Part {p.partLabel}
+                  </span>
+                  <div className="text-xs sm:text-sm text-slate-800 leading-relaxed font-sans overflow-x-auto select-text">
+                    <MarkdownMathRenderer content={p.questionText} />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

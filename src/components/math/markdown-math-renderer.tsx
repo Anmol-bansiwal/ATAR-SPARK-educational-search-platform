@@ -7,10 +7,20 @@ import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import { normalizeMarkdownMath } from '../../lib/utils';
+import { resolvePaperAssetUrl } from '../../lib/api-client';
 
 interface MarkdownMathRendererProps {
   content: string;
   className?: string;
+}
+
+/**
+ * Normalizes question markdown to guarantee MCQ options A, B, C, D appear on separate lines.
+ */
+function normalizeMcqLines(text: string): string {
+  if (!text) return text;
+  // Ensure options like "A. foo B. bar C. baz D. qux" are separated by double newlines
+  return text.replace(/([^\n])\s+([A-D]\.|\([A-D]\))\s+/g, '$1\n\n$2 ');
 }
 
 export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
@@ -18,7 +28,7 @@ export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
   className = '',
 }) => {
   const processedContent = useMemo(
-    () => normalizeMarkdownMath(content),
+    () => normalizeMarkdownMath(normalizeMcqLines(content)),
     [content]
   );
 
@@ -49,10 +59,36 @@ export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
           h3: ({ node: _node, ...props }) => (
             <h3 className="font-bold text-xs sm:text-sm text-slate-900 mt-3 mb-1.5" {...props} />
           ),
-          // Paragraphs
-          p: ({ node: _node, ...props }) => (
-            <p className="mb-2.5 leading-relaxed text-slate-700 text-xs sm:text-sm" {...props} />
-          ),
+          // Paragraphs with MCQ option detection
+          p: ({ node: _node, children, ...props }) => {
+            const childArray = React.Children.toArray(children);
+            const firstChild = childArray[0];
+
+            // Detect multiple-choice option lines like "A. 4 g" or "(A) 4 g"
+            if (typeof firstChild === 'string') {
+              const mcqMatch = firstChild.match(/^([A-D]\.|\([A-D]\))\s*(.*)/);
+              if (mcqMatch) {
+                const otherChildren = childArray.slice(1);
+                return (
+                  <div className="ml-4 sm:ml-6 my-1.5 flex items-baseline gap-2.5 text-xs sm:text-sm text-slate-800">
+                    <span className="font-bold text-[#155dfc] w-5 shrink-0 select-none">
+                      {mcqMatch[1]}
+                    </span>
+                    <span className="leading-relaxed">
+                      {mcqMatch[2]}
+                      {otherChildren}
+                    </span>
+                  </div>
+                );
+              }
+            }
+
+            return (
+              <p className="mb-2.5 leading-relaxed text-slate-700 text-xs sm:text-sm" {...props}>
+                {children}
+              </p>
+            );
+          },
           // Ordered Lists (Step-by-step mathematical reasoning)
           ol: ({ node: _node, ...props }) => (
             <ol className="list-decimal pl-5 space-y-3 my-3 text-xs sm:text-sm text-slate-700 leading-relaxed" {...props} />
@@ -76,6 +112,27 @@ export const MarkdownMathRenderer: React.FC<MarkdownMathRendererProps> = ({
               {...props}
             />
           ),
+          // Markdown Images: render diagrams inside questions/replies per FRONTEND_GUIDE.md §1
+          img: ({ node: _node, src, alt, ...props }) => {
+            const srcStr = typeof src === 'string' ? src : '';
+            const resolvedSrc = srcStr ? resolvePaperAssetUrl(srcStr) : '';
+            return (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={resolvedSrc}
+                alt={alt || 'Exam paper diagram'}
+                loading="lazy"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '320px',
+                  display: 'block',
+                  objectFit: 'contain',
+                }}
+                className="my-3 rounded-xl border border-slate-200 bg-white p-1.5 shadow-2xs"
+                {...props}
+              />
+            );
+          },
           // Table element support
           table: ({ node: _node, ...props }) => (
             <div className="overflow-x-auto my-3 rounded-xl border border-slate-200">

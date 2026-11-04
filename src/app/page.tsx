@@ -65,13 +65,12 @@ export default function LandingPage() {
     const trimmed = filters.query.trim();
     if (!trimmed) return;
 
-    const paper =
-      filters.subject !== 'All' ? `${filters.subject} exam paper` : 'Exam paper';
-
     const params = new URLSearchParams();
     params.set('q', trimmed);
-    params.set('paper', paper);
-    if (filters.subject !== 'All') params.set('subject', filters.subject);
+    if (filters.subject !== 'All') {
+      params.set('paper', filters.subject);
+      params.set('subject', filters.subject);
+    }
     if (filters.timePeriod !== 'All Years') params.set('timePeriod', filters.timePeriod);
     if (filters.difficulty !== 'All') params.set('difficulty', filters.difficulty);
     if (filters.year !== 'All') params.set('year', String(filters.year));

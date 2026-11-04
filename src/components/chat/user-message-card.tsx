@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
@@ -26,7 +26,8 @@ export const UserMessageCard: React.FC<MessageCardProps> = ({
     }
   };
 
-  const hasFilterTag = Boolean(paperTag && paperTag !== 'Exam paper');
+  const cleanTag = (paperTag || '').replace(/\s*exam\s+paper\b/i, '').trim();
+  const hasFilterTag = Boolean(cleanTag && cleanTag !== 'Exam paper' && cleanTag !== 'All');
 
   return (
     <div className="w-full flex justify-end pr-2 sm:pr-4 animate-in fade-in slide-in-from-top-2">
@@ -60,7 +61,7 @@ export const UserMessageCard: React.FC<MessageCardProps> = ({
               Filter
             </span>
             <span className="text-xs font-medium text-white leading-tight truncate max-w-full">
-              {paperTag}
+              {cleanTag}
             </span>
           </div>
         )}

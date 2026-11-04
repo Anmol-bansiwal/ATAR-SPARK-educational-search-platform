@@ -6,6 +6,7 @@ import type {
   TimePeriodOption,
   QuestionSearchParams,
   QuestionSearchResponse,
+  ExamQuestion,
   HybridSearchResponse,
   QuestionAnswerResponse,
   QuestionAnswerParams,
@@ -287,6 +288,42 @@ export const apiClient = {
       },
       TIMEOUTS.answer
     );
+  },
+
+  /**
+   * Fetches sibling parts of a question (e.g. Q28(a), Q28(b), Q28(c))
+   * belonging to the same questionNumber and sourceDocument.
+   */
+  async fetchSiblingParts(
+    sourceDocument: string,
+    questionNumber: string | number,
+    signal?: AbortSignal
+  ): Promise<ExamQuestion[]> {
+    try {
+      const cleanDoc = sourceDocument.replace(/#.*$/, '').trim();
+      const res = await this.searchQuestions(
+        {
+          query: `Question ${questionNumber} ${cleanDoc}`,
+          limit: 15,
+        },
+        signal
+      );
+      if (!res?.results?.length) return [];
+
+      const targetQNum = String(questionNumber).replace(/^Q/i, '').trim();
+      return res.results.filter((q) => {
+        const docMatches =
+          !cleanDoc ||
+          (q.sourceDocument && q.sourceDocument.toLowerCase().includes(cleanDoc.toLowerCase()));
+        const qNumMatches =
+          q.questionNumber != null &&
+          String(q.questionNumber).replace(/^Q/i, '').trim() === targetQNum;
+        return docMatches && (qNumMatches || Boolean(q.partLabel && docMatches));
+      });
+    } catch (err) {
+      console.error('[fetchSiblingParts] Failed to fetch siblings:', err);
+      return [];
+    }
   },
 };
 

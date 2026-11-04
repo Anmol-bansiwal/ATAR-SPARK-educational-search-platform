@@ -52,10 +52,29 @@ function getMessageSources(message: UIMessage): PaperCardSource[] {
             figureUrls?: unknown;
             questionText?: unknown;
             questionMarkdown?: unknown;
+            card?: unknown;
+            questionNumber?: unknown;
+            partLabel?: unknown;
+            sourceDocument?: unknown;
           };
         };
       }
     ).providerMetadata?.edusearch;
+    const rawCard = meta?.card;
+    let cardMarkdown: string | undefined;
+    let cardTitle: string | undefined;
+
+    if (rawCard === null) {
+      // Sub-parts merged into a master card have card === null and should be skipped
+      return [];
+    } else if (typeof rawCard === 'string') {
+      cardMarkdown = rawCard;
+    } else if (rawCard && typeof rawCard === 'object' && 'markdown' in rawCard) {
+      const cardObj = rawCard as { title?: unknown; markdown?: unknown };
+      if (typeof cardObj.markdown === 'string') cardMarkdown = cardObj.markdown;
+      if (typeof cardObj.title === 'string') cardTitle = cardObj.title;
+    }
+
     const rawFigures = meta?.figureUrls;
     const figureUrls = Array.isArray(rawFigures)
       ? rawFigures.filter((u): u is string => typeof u === 'string' && u.trim() !== '')
@@ -77,12 +96,18 @@ function getMessageSources(message: UIMessage): PaperCardSource[] {
     return [
       {
         sourceId,
-        title: typeof p.title === 'string' && p.title.trim() ? p.title : 'Source',
+        title:
+          cardTitle ||
+          (typeof p.title === 'string' && p.title.trim() ? p.title : 'Source'),
         filename: typeof p.filename === 'string' ? p.filename : undefined,
         mediaType,
         questionMarkdown,
+        ...(cardMarkdown ? { card: cardMarkdown } : {}),
         ...(questionText ? { questionText } : {}),
         ...(figureUrls.length > 0 ? { figureUrls } : {}),
+        ...(meta?.questionNumber != null ? { questionNumber: meta.questionNumber as number | string } : {}),
+        ...(typeof meta?.partLabel === 'string' ? { partLabel: meta.partLabel } : {}),
+        ...(typeof meta?.sourceDocument === 'string' ? { sourceDocument: meta.sourceDocument } : {}),
       },
     ];
   });
@@ -118,14 +143,15 @@ function parseYear(val: string | null): number | 'All' {
   return Number.isNaN(parsed) ? 'All' : parsed;
 }
 
-const DEFAULT_PAPER_TAG = 'Exam paper';
+const DEFAULT_PAPER_TAG = '';
 
 function ChatPageInner() {
   const searchParams = useSearchParams();
 
   // Honest params: no query -> no auto-send, no invented defaults.
   const initialQuery = searchParams.get('q')?.trim() ?? '';
-  const paperTag = searchParams.get('paper') ?? DEFAULT_PAPER_TAG;
+  const rawPaper = (searchParams.get('paper') || searchParams.get('subject') || DEFAULT_PAPER_TAG).trim();
+  const paperTag = rawPaper.replace(/\s*exam\s+paper\b/i, '').trim();
   const chatIdParam = searchParams.get('chat')?.trim() ?? '';
 
   const [sessionId] = useState(() => chatIdParam || createChatId());
@@ -223,7 +249,16 @@ function ChatPageInner() {
   // Surface chat streaming errors as toast instead of alerts
   useEffect(() => {
     if (error) {
-      showToast(error.message || 'Failed to stream response from backend.', 'error');
+      console.error('[Chat Stream Error]:', error);
+      const isTechnical = /unrecognized key|expected .+ received|\bzod\b|\bprisma\b|internal server|syntaxerror|typeerror|econnrefused/i.test(
+        error.message || ''
+      );
+      showToast(
+        isTechnical
+          ? 'An error occurred while communicating with the server. Please check console or try again.'
+          : error.message || 'Failed to stream response from backend.',
+        'error'
+      );
     }
   }, [error, showToast]);
 
@@ -329,7 +364,7 @@ function ChatPageInner() {
         ) : (
           <div className="flex-1 flex items-center justify-center select-none">
             <p className="text-sm text-slate-400 font-medium">
-              Ask a question below to search the exam archive.
+              Ask a topic (e.g. vectors, calculus) or exam question below to search the archive.
             </p>
           </div>
         )}

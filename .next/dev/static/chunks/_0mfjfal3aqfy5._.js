@@ -2754,6 +2754,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                         className: "px-3 pt-1 pb-2 space-y-1",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
                                 onClick: onNewChat,
                                 className: "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer",
                                 children: [
@@ -2763,14 +2764,14 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         className: "w-5 h-5 object-contain shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 91,
+                                        lineNumber: 92,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "New Chat"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 97,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
@@ -2780,6 +2781,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
                                 className: "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -2788,23 +2790,24 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         className: "w-5 h-5 object-contain shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 101,
+                                        lineNumber: 103,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Search Chat"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 108,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 98,
+                                lineNumber: 99,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
                                 className: "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -2813,20 +2816,20 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         className: "w-5 h-5 object-contain shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 111,
+                                        lineNumber: 114,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Library"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 116,
+                                        lineNumber: 119,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 108,
+                                lineNumber: 110,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
@@ -2846,7 +2849,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         children: "Recent Chats"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 123,
+                                        lineNumber: 126,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     recentChats.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2863,13 +2866,13 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                         children: "Clear all"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                                        lineNumber: 127,
+                                        lineNumber: 130,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 122,
+                                lineNumber: 125,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             recentChats.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2877,7 +2880,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                 children: "Your conversations will appear here after you ask a question."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                lineNumber: 144,
+                                lineNumber: 147,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)) : recentChats.map((chat)=>{
                                 const isActive = chat.id === activeChatId;
@@ -2892,7 +2895,7 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                             children: chat.title
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/sidebar.tsx",
-                                            lineNumber: 159,
+                                            lineNumber: 162,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2912,25 +2915,25 @@ const Sidebar = ({ recentChats = [], activeChatId = '', onSelectChat, onNewChat,
                                                 className: "w-3.5 h-3.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/sidebar.tsx",
-                                                lineNumber: 181,
+                                                lineNumber: 184,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/sidebar.tsx",
-                                            lineNumber: 167,
+                                            lineNumber: 170,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, chat.id, true, {
                                     fileName: "[project]/src/components/layout/sidebar.tsx",
-                                    lineNumber: 151,
+                                    lineNumber: 154,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0));
                             })
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/sidebar.tsx",
-                        lineNumber: 121,
+                        lineNumber: 124,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
@@ -3446,6 +3449,28 @@ const apiClient = {
             body: JSON.stringify(params),
             signal
         }, TIMEOUTS.answer);
+    },
+    /**
+   * Fetches sibling parts of a question (e.g. Q28(a), Q28(b), Q28(c))
+   * belonging to the same questionNumber and sourceDocument.
+   */ async fetchSiblingParts (sourceDocument, questionNumber, signal) {
+        try {
+            const cleanDoc = sourceDocument.replace(/#.*$/, '').trim();
+            const res = await this.searchQuestions({
+                query: `Question ${questionNumber} ${cleanDoc}`,
+                limit: 15
+            }, signal);
+            if (!res?.results?.length) return [];
+            const targetQNum = String(questionNumber).replace(/^Q/i, '').trim();
+            return res.results.filter((q)=>{
+                const docMatches = !cleanDoc || q.sourceDocument && q.sourceDocument.toLowerCase().includes(cleanDoc.toLowerCase());
+                const qNumMatches = q.questionNumber != null && String(q.questionNumber).replace(/^Q/i, '').trim() === targetQNum;
+                return docMatches && (qNumMatches || Boolean(q.partLabel && docMatches));
+            });
+        } catch (err) {
+            console.error('[fetchSiblingParts] Failed to fetch siblings:', err);
+            return [];
+        }
     }
 };
 function toRestDifficulty(difficulty) {

@@ -17,9 +17,12 @@ interface SourceArtifactProps {
 export function SourceArtifact({ sources }: SourceArtifactProps) {
   const [open, setOpen] = useState(true);
 
-  if (sources.length === 0) return null;
+  // Skip sub-parts that were merged into master question cards (card === null)
+  const validSources = sources.filter((s) => s.card !== null);
 
-  const figureCount = sources.reduce(
+  if (validSources.length === 0) return null;
+
+  const figureCount = validSources.reduce(
     (n, s) => n + (s.figureUrls?.filter((u: string) => Boolean(u?.trim())).length ?? 0),
     0
   );
@@ -32,7 +35,7 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
         className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-blue-200 hover:text-[#2665D9] transition-colors cursor-pointer select-none"
       >
         <BookOpen className="w-3.5 h-3.5 text-[#2665D9]" />
-        Closest Exam Questions · {sources.length}
+        Closest Exam Questions · {validSources.length}
         {figureCount > 0
           ? ` · ${figureCount} diagram${figureCount === 1 ? '' : 's'}`
           : ''}
@@ -51,7 +54,7 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-bold text-slate-900 truncate">
-                  Closest Exam Questions ({sources.length})
+                  Closest Exam Questions ({validSources.length})
                 </p>
                 <p className="text-[10px] text-slate-500 truncate">
                   Full text and original diagrams from cited exam papers
@@ -69,7 +72,7 @@ export function SourceArtifact({ sources }: SourceArtifactProps) {
           </div>
 
           <div className="p-4 space-y-3">
-            {sources.map((source, index) => {
+            {validSources.map((source, index) => {
               const hasFigures = (source.figureUrls?.length ?? 0) > 0;
               return (
                 <PaperCard

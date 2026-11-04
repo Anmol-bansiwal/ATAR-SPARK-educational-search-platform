@@ -85,6 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Navigation Actions */}
       <div className="px-3 pt-1 pb-2 space-y-1">
         <button
+          type="button"
           onClick={onNewChat}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer"
         >
@@ -96,6 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>New Chat</span>
         </button>
         <button
+          type="button"
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer"
         >
           <img
@@ -106,6 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>Search Chat</span>
         </button>
         <button
+          type="button"
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#0D0D0D] hover:bg-[#E6E6E6] text-xs font-normal transition-colors cursor-pointer"
         >
           <img

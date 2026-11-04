@@ -14,6 +14,7 @@ export interface SearchBoxProps {
   className?: string;
   maxFiles?: number;
   variant?: 'default' | 'pill';
+  placeholder?: string;
 
   // Optional filter options passed using props (from GET /questions/filters)
   subjectOptions?: string[];
@@ -40,6 +41,39 @@ const DEFAULT_SUBJECT_OPTIONS: string[] = ['All', 'Mathematics', 'Physics', 'Che
 const DEFAULT_TIME_PERIOD_OPTIONS: string[] = ['All Years', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'];
 const DEFAULT_DIFFICULTY_OPTIONS: (DifficultyLevel | 'All')[] = ['All', 'Easy', 'Medium', 'Hard'];
 const DEFAULT_YEAR_OPTIONS: (number | 'All')[] = ['All'];
+
+interface SpeechRecognitionResultItem {
+  transcript: string;
+}
+interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: {
+    [index: number]: SpeechRecognitionResultItem;
+  };
+}
+interface SpeechRecognitionEventLike {
+  results: SpeechRecognitionResultList;
+}
+interface SpeechRecognitionErrorEventLike {
+  error: string;
+}
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+}
 
 /**
  * SearchBox Component
@@ -68,6 +102,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
   showDifficulty,
   showYear,
   variant,
+  placeholder = 'Ask a topic (e.g. vectors, calculus) or exam question...',
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<'subject' | 'timePeriod' | 'difficulty' | 'year' | null>(null);
   const [isListening, setIsListening] = useState(false);
@@ -190,7 +225,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
     }
   };
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const handleSpeechRecognition = () => {
     // If currently listening, clicking again stops it
@@ -200,8 +235,8 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
       return;
     }
 
-    const win = typeof window !== 'undefined' ? (window as any) : null;
-    if (!win) return;
+    if (typeof window === 'undefined') return;
+    const win = window as WindowWithSpeechRecognition;
 
     const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
 
@@ -225,16 +260,19 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
         recognitionRef.current = null;
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEventLike) => {
         console.warn('Speech recognition error:', event.error);
         setIsListening(false);
         recognitionRef.current = null;
       };
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEventLike) => {
         let transcript = '';
         for (let i = 0; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+          const item = event.results[i]?.[0];
+          if (item?.transcript) {
+            transcript += item.transcript;
+          }
         }
         if (transcript.trim()) {
           handleUpdate({ ...filters, query: transcript });
@@ -342,7 +380,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
             value={filters.query}
             onChange={(e) => handleUpdate({ ...filters, query: e.target.value })}
             onKeyDown={handleKeyDown}
-            placeholder="Search question, topics, concepts..."
+            placeholder={placeholder}
             className={`min-w-0 flex-1 bg-transparent py-1 text-slate-800 placeholder-[#757575] focus:outline-none font-normal ${isPill ? 'px-2 text-xs sm:text-sm' : 'px-1.5 text-sm sm:text-base'
               }`}
           />

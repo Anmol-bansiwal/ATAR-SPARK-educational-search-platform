@@ -112,7 +112,9 @@ export const MessageStream: React.FC<MessageStreamProps> = ({
         )}
       </div>
 
-      {!isStreaming && <SourceArtifact sources={sources} />}
+      {!isStreaming && answerOrigin === 'paper_questions' && (
+        <SourceArtifact sources={sources} />
+      )}
 
       {!isStreaming && suggestions && suggestions.length > 0 && (
         <div className="pt-1.5 flex flex-wrap items-center gap-2 animate-in fade-in duration-200">

@@ -72,11 +72,12 @@ function LandingPage() {
     const handleSearchSubmit = ()=>{
         const trimmed = filters.query.trim();
         if (!trimmed) return;
-        const paper = filters.subject !== 'All' ? `${filters.subject} exam paper` : 'Exam paper';
         const params = new URLSearchParams();
         params.set('q', trimmed);
-        params.set('paper', paper);
-        if (filters.subject !== 'All') params.set('subject', filters.subject);
+        if (filters.subject !== 'All') {
+            params.set('paper', filters.subject);
+            params.set('subject', filters.subject);
+        }
         if (filters.timePeriod !== 'All Years') params.set('timePeriod', filters.timePeriod);
         if (filters.difficulty !== 'All') params.set('difficulty', filters.difficulty);
         if (filters.year !== 'All') params.set('year', String(filters.year));
@@ -87,19 +88,19 @@ function LandingPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$landing$2d$page$2d$background$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LandingPageBackground"], {}, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 85,
+                lineNumber: 84,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
                 className: "relative z-20 w-full pt-4 px-6 md:px-12",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$header$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Header"], {}, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 89,
+                    lineNumber: 88,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 88,
+                lineNumber: 87,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -123,7 +124,7 @@ function LandingPage() {
                                             className: "hidden sm:inline"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 116,
+                                            lineNumber: 115,
                                             columnNumber: 35
                                         }, this),
                                         "Question with",
@@ -138,13 +139,13 @@ function LandingPage() {
                                             children: "AI"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 119,
+                                            lineNumber: 118,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 108,
+                                    lineNumber: 107,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -161,20 +162,20 @@ function LandingPage() {
                                             className: "hidden md:inline"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 144,
+                                            lineNumber: 143,
                                             columnNumber: 15
                                         }, this),
                                         "Physics and Chemistry, by topic, year, difficulty or pattern of repetition."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 135,
+                                    lineNumber: 134,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 101,
+                            lineNumber: 100,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$search$2d$box$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SearchBox"], {
@@ -187,18 +188,18 @@ function LandingPage() {
                             yearOptions: yearOptions
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 150,
+                            lineNumber: 149,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 98,
+                    lineNumber: 97,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 97,
+                lineNumber: 96,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -210,7 +211,7 @@ function LandingPage() {
                             children: "Our Terms"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 165,
+                            lineNumber: 164,
                             columnNumber: 11
                         }, this),
                         " and",
@@ -220,25 +221,25 @@ function LandingPage() {
                             children: "Privacy Policy"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 166,
+                            lineNumber: 165,
                             columnNumber: 11
                         }, this),
                         " in a new window apply. We are an AI and can make mistakes."
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 164,
+                    lineNumber: 163,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 163,
+                lineNumber: 162,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 83,
+        lineNumber: 82,
         columnNumber: 5
     }, this);
 }
@@ -643,7 +644,7 @@ const DEFAULT_DIFFICULTY_OPTIONS = [
 const DEFAULT_YEAR_OPTIONS = [
     'All'
 ];
-const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, onFileUpload, onFilesChange, className = '', maxFiles = 5, subjectOptions, timePeriodOptions, difficultyOptions, yearOptions, showSubject, showTimePeriod, showDifficulty, showYear, variant })=>{
+const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, onFileUpload, onFilesChange, className = '', maxFiles = 5, subjectOptions, timePeriodOptions, difficultyOptions, yearOptions, showSubject, showTimePeriod, showDifficulty, showYear, variant, placeholder = 'Ask a topic (e.g. vectors, calculus) or exam question...' })=>{
     _s();
     const [activeDropdown, setActiveDropdown] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isListening, setIsListening] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -771,8 +772,9 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
             setIsListening(false);
             return;
         }
-        const win = ("TURBOPACK compile-time truthy", 1) ? window : "TURBOPACK unreachable";
-        if (!win) return;
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        const win = window;
         const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
         if (!SpeechRecognitionClass) {
             showToast('Speech recognition is not supported in this browser. Please use Google Chrome, Edge, or Safari.', 'info');
@@ -798,7 +800,10 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
             recognition.onresult = (event)=>{
                 let transcript = '';
                 for(let i = 0; i < event.results.length; i++){
-                    transcript += event.results[i][0].transcript;
+                    const item = event.results[i]?.[0];
+                    if (item?.transcript) {
+                        transcript += item.transcript;
+                    }
                 }
                 if (transcript.trim()) {
                     handleUpdate({
@@ -822,7 +827,7 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                 onDismiss: handleDismissToast
             }, void 0, false, {
                 fileName: "[project]/src/components/search-box.tsx",
-                lineNumber: 255,
+                lineNumber: 293,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -841,7 +846,7 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                         className: "hidden"
                     }, void 0, false, {
                         fileName: "[project]/src/components/search-box.tsx",
-                        lineNumber: 280,
+                        lineNumber: 318,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     attachedFiles.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -853,7 +858,7 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                         className: "w-3.5 h-3.5 text-blue-600 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 299,
+                                        lineNumber: 337,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -862,7 +867,7 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                         children: file.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 300,
+                                        lineNumber: 338,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -874,23 +879,23 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                             className: "w-3 h-3"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/search-box.tsx",
-                                            lineNumber: 309,
+                                            lineNumber: 347,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 303,
+                                        lineNumber: 341,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, `${file.name}-${idx}`, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 295,
+                                lineNumber: 333,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)))
                     }, void 0, false, {
                         fileName: "[project]/src/components/search-box.tsx",
-                        lineNumber: 293,
+                        lineNumber: 331,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -906,12 +911,12 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                     className: isPill ? 'w-4 h-4 text-slate-400' : 'w-4 h-4 sm:w-[18px] sm:h-[18px]'
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/search-box.tsx",
-                                    lineNumber: 336,
+                                    lineNumber: 374,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 322,
+                                lineNumber: 360,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -922,11 +927,11 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                         query: e.target.value
                                     }),
                                 onKeyDown: handleKeyDown,
-                                placeholder: "Search question, topics, concepts...",
+                                placeholder: placeholder,
                                 className: `min-w-0 flex-1 bg-transparent py-1 text-slate-800 placeholder-[#757575] focus:outline-none font-normal ${isPill ? 'px-2 text-xs sm:text-sm' : 'px-1.5 text-sm sm:text-base'}`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 340,
+                                lineNumber: 378,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -943,12 +948,12 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                             strokeWidth: 1.8
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/search-box.tsx",
-                                            lineNumber: 363,
+                                            lineNumber: 401,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 353,
+                                        lineNumber: 391,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -968,7 +973,7 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 strokeWidth: 2.2
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 384,
+                                                lineNumber: 422,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -976,25 +981,25 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 children: "Search"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 385,
+                                                lineNumber: 423,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 367,
+                                        lineNumber: 405,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 351,
+                                lineNumber: 389,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/search-box.tsx",
-                        lineNumber: 319,
+                        lineNumber: 357,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     hasAnyFilters && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1012,20 +1017,20 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 children: filters.subject === 'All' ? 'Subject' : filters.subject
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 407,
+                                                lineNumber: 445,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                                 className: "w-3.5 h-3.5 text-slate-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 408,
+                                                lineNumber: 446,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 402,
+                                        lineNumber: 440,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     activeDropdown === 'subject' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1046,31 +1051,31 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                         children: sub
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 423,
+                                                        lineNumber: 461,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     filters.subject === sub && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                                         className: "w-3.5 h-3.5 text-blue-600 shrink-0 ml-1.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 424,
+                                                        lineNumber: 462,
                                                         columnNumber: 53
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, String(sub), true, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 414,
+                                                lineNumber: 452,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 412,
+                                        lineNumber: 450,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 401,
+                                lineNumber: 439,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             isTimePeriodVisible && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1085,20 +1090,20 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 children: filters.timePeriod === 'All Years' ? 'Time period' : filters.timePeriod
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 440,
+                                                lineNumber: 478,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                                 className: "w-3.5 h-3.5 text-slate-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 441,
+                                                lineNumber: 479,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 435,
+                                        lineNumber: 473,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     activeDropdown === 'timePeriod' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1119,31 +1124,31 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                         children: tp
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 456,
+                                                        lineNumber: 494,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     filters.timePeriod === tp && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                                         className: "w-3.5 h-3.5 text-blue-600 shrink-0 ml-1.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 457,
+                                                        lineNumber: 495,
                                                         columnNumber: 55
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, String(tp), true, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 447,
+                                                lineNumber: 485,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 445,
+                                        lineNumber: 483,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 434,
+                                lineNumber: 472,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             isDifficultyVisible && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1158,20 +1163,20 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 children: filters.difficulty === 'All' ? 'Difficulty level' : filters.difficulty
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 473,
+                                                lineNumber: 511,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                                 className: "w-3.5 h-3.5 text-slate-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 474,
+                                                lineNumber: 512,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 468,
+                                        lineNumber: 506,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     activeDropdown === 'difficulty' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1192,31 +1197,31 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                         children: diff
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 489,
+                                                        lineNumber: 527,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     filters.difficulty === diff && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                                         className: "w-3.5 h-3.5 text-blue-600 shrink-0 ml-1.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 490,
+                                                        lineNumber: 528,
                                                         columnNumber: 57
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, String(diff), true, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 480,
+                                                lineNumber: 518,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 478,
+                                        lineNumber: 516,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 467,
+                                lineNumber: 505,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             isYearVisible && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1231,20 +1236,20 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                 children: filters.year === 'All' ? 'Year' : filters.year
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 506,
+                                                lineNumber: 544,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                                 className: "w-3.5 h-3.5 text-slate-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 507,
+                                                lineNumber: 545,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 501,
+                                        lineNumber: 539,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     activeDropdown === 'year' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1264,49 +1269,49 @@ const SearchBox = ({ filters = DEFAULT_FILTERS, onFilterChange, onSearchSubmit, 
                                                         children: yr
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 522,
+                                                        lineNumber: 560,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     filters.year === yr && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                                         className: "w-3.5 h-3.5 text-blue-600 shrink-0 ml-1.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/search-box.tsx",
-                                                        lineNumber: 523,
+                                                        lineNumber: 561,
                                                         columnNumber: 49
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, String(yr), true, {
                                                 fileName: "[project]/src/components/search-box.tsx",
-                                                lineNumber: 513,
+                                                lineNumber: 551,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/search-box.tsx",
-                                        lineNumber: 511,
+                                        lineNumber: 549,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/search-box.tsx",
-                                lineNumber: 500,
+                                lineNumber: 538,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/search-box.tsx",
-                        lineNumber: 398,
+                        lineNumber: 436,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/search-box.tsx",
-                lineNumber: 267,
+                lineNumber: 305,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/search-box.tsx",
-        lineNumber: 253,
+        lineNumber: 291,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1900,6 +1905,28 @@ const apiClient = {
             body: JSON.stringify(params),
             signal
         }, TIMEOUTS.answer);
+    },
+    /**
+   * Fetches sibling parts of a question (e.g. Q28(a), Q28(b), Q28(c))
+   * belonging to the same questionNumber and sourceDocument.
+   */ async fetchSiblingParts (sourceDocument, questionNumber, signal) {
+        try {
+            const cleanDoc = sourceDocument.replace(/#.*$/, '').trim();
+            const res = await this.searchQuestions({
+                query: `Question ${questionNumber} ${cleanDoc}`,
+                limit: 15
+            }, signal);
+            if (!res?.results?.length) return [];
+            const targetQNum = String(questionNumber).replace(/^Q/i, '').trim();
+            return res.results.filter((q)=>{
+                const docMatches = !cleanDoc || q.sourceDocument && q.sourceDocument.toLowerCase().includes(cleanDoc.toLowerCase());
+                const qNumMatches = q.questionNumber != null && String(q.questionNumber).replace(/^Q/i, '').trim() === targetQNum;
+                return docMatches && (qNumMatches || Boolean(q.partLabel && docMatches));
+            });
+        } catch (err) {
+            console.error('[fetchSiblingParts] Failed to fetch siblings:', err);
+            return [];
+        }
     }
 };
 function toRestDifficulty(difficulty) {

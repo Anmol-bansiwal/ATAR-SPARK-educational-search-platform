@@ -90,6 +90,8 @@ export interface ExamQuestion {
   sourceDocument?: string;
   fileUrl?: string | null;
   pageReference?: string; // e.g. "p. 12"
+  questionNumber?: number | string | null;
+  partLabel?: string | null;
   /** Real paper diagrams (Cloudinary HTTPS or Nest /papers/figures/...). */
   figureUrls?: string[];
   /** Cosine similarity 0–1; UI should hide results below 0.3 */
