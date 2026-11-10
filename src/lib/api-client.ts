@@ -17,6 +17,7 @@ import type {
 } from '../types/question';
 import type { ChatSummary, SavedChat } from '../types/chat';
 import { getChatKey } from './chat-key';
+import { getBackendBaseUrl } from '../config/api';
 
 /**
  * Custom API Error containing HTTP status code and message.
@@ -45,8 +46,7 @@ export function getApiBaseUrl(): string {
     return '/api/backend';
   }
   // Server-side (Node.js/Next.js SSR)
-  const url = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').trim();
-  return url.replace(/\/+$/, '');
+  return getBackendBaseUrl();
 }
 
 /** Timeout budgets per endpoint type (ms). */

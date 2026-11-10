@@ -1,7 +1,8 @@
 // src/app/api/chat/route.ts
+import { getBackendBaseUrl } from '@/config/api';
 
-/** Backend verifies the full answer before the first SSE byte — allow ≥45s (buffer set to 60s). */
-const BACKEND_FIRST_BYTE_MS = 60_000;
+/** Allow enough time for a cold backend/LLM response before the first SSE byte. */
+const BACKEND_FIRST_BYTE_MS = 120_000;
 
 export async function POST(req: Request) {
   let body: Record<string, unknown> = {};
@@ -11,13 +12,7 @@ export async function POST(req: Request) {
     // Empty body fallback
   }
 
-  const backendBaseUrl = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    'http://localhost:3000'
-  )
-    .trim()
-    .replace(/\/+$/, '');
+  const backendBaseUrl = getBackendBaseUrl();
 
   try {
     const controller = new AbortController();
@@ -73,6 +68,10 @@ export async function POST(req: Request) {
     if (contentType.includes('application/json')) {
       const errJson = await backendResponse.json().catch(() => null);
       if (errJson && typeof errJson === 'object') {
+        console.error(
+          `[api/chat] Backend ${backendResponse.status} from ${backendBaseUrl}/api/chat`,
+          errJson
+        );
         return Response.json(errJson, { status: backendResponse.status });
       }
     }
@@ -92,12 +91,15 @@ export async function POST(req: Request) {
     );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
+    const isTimeout = err instanceof Error && err.name === 'AbortError';
     console.error(`[api/chat] Unable to reach ${backendBaseUrl}/api/chat: ${message}`);
     return Response.json(
       {
-        error: 'Unable to connect to the educational assistant backend. Please try again shortly.',
+        error: isTimeout
+          ? 'The educational assistant took too long to respond. Please try again.'
+          : 'Unable to connect to the educational assistant backend. Please try again shortly.',
       },
-      { status: 503 }
+      { status: isTimeout ? 504 : 503 }
     );
   }
 }

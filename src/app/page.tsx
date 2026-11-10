@@ -75,6 +75,7 @@ export default function LandingPage() {
         `edusearch.pendingPrompt.${newChatId}`,
         JSON.stringify({ prompt: trimmed, filters })
       );
+      window.sessionStorage.setItem(`edusearch.newChat.${newChatId}`, '1');
     }
 
     router.push(`/c/${newChatId}`);

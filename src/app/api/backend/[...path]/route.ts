@@ -1,5 +1,6 @@
 // src/app/api/backend/[...path]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { getBackendBaseUrl } from '@/config/api';
 
 /**
  * Server-Side Backend Proxy
@@ -8,15 +9,6 @@ import { NextRequest, NextResponse } from 'next/server';
  * from the client browser and client JavaScript bundles.
  * All client REST calls route through /api/backend/...
  */
-
-function getBackendBaseUrl(): string {
-  const url = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    'http://localhost:3000'
-  ).trim();
-  return url.replace(/\/+$/, '');
-}
 
 async function handleProxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const resolvedParams = await params;
@@ -98,4 +90,3 @@ export const POST = handleProxy;
 export const PUT = handleProxy;
 export const PATCH = handleProxy;
 export const DELETE = handleProxy;
-

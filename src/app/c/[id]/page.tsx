@@ -22,6 +22,14 @@ import type { PaperCardSource } from '../../../components/chat/paper-card';
 
 type ChatMessage = UIMessage<ChatMetadata>;
 
+const DEFAULT_FILTERS: SearchFilterState = {
+  query: '',
+  subject: 'All',
+  timePeriod: 'All Years',
+  difficulty: 'All',
+  year: 'All',
+};
+
 function getMessageText(message: UIMessage): string {
   if (!message.parts || message.parts.length === 0) return '';
   return message.parts
@@ -109,19 +117,14 @@ function SavedChatPageInner() {
   const router = useRouter();
   const chatId = typeof params?.id === 'string' ? params.id : '';
 
-  const [filters, setFilters] = useState<SearchFilterState>({
-    query: '',
-    subject: 'All',
-    timePeriod: 'All Years',
-    difficulty: 'All',
-    year: 'All',
-  });
+  const [filters, setFilters] = useState<SearchFilterState>(DEFAULT_FILTERS);
 
   const [toast, setToast] = useState<{ message: string; type?: ToastType } | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
 
   const initialSentRef = useRef(false);
+  const initialRequestStartedRef = useRef(false);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showToast = useCallback((message: string, type: ToastType = 'info') => {
@@ -153,6 +156,7 @@ function SavedChatPageInner() {
     transport,
     onFinish: () => {
       if (typeof window !== 'undefined') {
+        window.sessionStorage.removeItem(`edusearch.newChat.${chatId}`);
         window.dispatchEvent(new Event(CHATS_UPDATED_EVENT));
       }
     },
@@ -172,6 +176,14 @@ function SavedChatPageInner() {
     let isMounted = true;
 
     async function loadChat() {
+      // The first response is still being persisted by the backend. Do not
+      // replace the active stream with a premature GET /api/chats/:id.
+      if (initialRequestStartedRef.current) return;
+
+      const newChatKey = `edusearch.newChat.${chatId}`;
+      const isClientCreatedChat =
+        typeof window !== 'undefined' && window.sessionStorage.getItem(newChatKey) === '1';
+
       // 1. Check if there is a pending search passed from landing page in sessionStorage
       if (typeof window !== 'undefined') {
         const pendingKey = `edusearch.pendingPrompt.${chatId}`;
@@ -185,10 +197,11 @@ function SavedChatPageInner() {
             }
             if (!initialSentRef.current && pending.prompt) {
               initialSentRef.current = true;
+              initialRequestStartedRef.current = true;
               setIsLoadingSaved(false);
               sendMessage(
                 { text: pending.prompt },
-                { body: { filters: toChatFilters(pending.filters ?? filters) } }
+                { body: { filters: toChatFilters(pending.filters ?? DEFAULT_FILTERS) } }
               );
               return;
             }
@@ -196,6 +209,13 @@ function SavedChatPageInner() {
             window.sessionStorage.removeItem(pendingKey);
           }
         }
+      }
+
+      // The first response for a client-created chat is persisted only after
+      // streaming completes, so its GET endpoint may briefly return 404.
+      if (isClientCreatedChat) {
+        setIsLoadingSaved(false);
+        return;
       }
 
       // 2. Fetch thread from GET /api/chats/:id
@@ -208,7 +228,7 @@ function SavedChatPageInner() {
       } catch (err: unknown) {
         if (!isMounted) return;
         const statusCode = err && typeof err === 'object' && 'statusCode' in err ? Number(err.statusCode) : 0;
-        if (statusCode === 404) {
+        if (statusCode === 404 && !initialRequestStartedRef.current) {
           // Another browser's chat, deleted, or wrong link -> show "Chat not found"
           setIsNotFound(true);
         } else if (statusCode === 503) {
@@ -226,7 +246,7 @@ function SavedChatPageInner() {
     return () => {
       isMounted = false;
     };
-  }, [chatId, sendMessage, setMessages, showToast, filters]);
+  }, [chatId, sendMessage, setMessages, showToast]);
 
   // Display transport errors
   useEffect(() => {

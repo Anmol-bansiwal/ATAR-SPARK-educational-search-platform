@@ -41,6 +41,7 @@ function ChatPageInner() {
           filters: { query: '', subject, timePeriod, difficulty, year },
         })
       );
+      window.sessionStorage.setItem(`edusearch.newChat.${newChatId}`, '1');
       router.replace(`/c/${newChatId}`);
       return;
     }
