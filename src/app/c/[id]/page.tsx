@@ -193,7 +193,9 @@ function SavedChatPageInner() {
           try {
             const pending = JSON.parse(rawPending) as { prompt: string; filters?: SearchFilterState };
             if (pending.filters) {
-              setFilters(pending.filters);
+              // Keep the landing page's subject/year/difficulty, but not its
+              // typed text: that question is sent below, so the box starts empty.
+              setFilters({ ...pending.filters, query: '' });
             }
             if (!initialSentRef.current && pending.prompt) {
               setIsLoadingSaved(false);
