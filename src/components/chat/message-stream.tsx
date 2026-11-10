@@ -16,6 +16,8 @@ interface MessageStreamProps {
   sources?: ArtifactSource[];
   suggestions?: ChatSuggestion[];
   onSuggestionClick?: (prompt: string) => void;
+  /** Why this reply has no text (the stream failed); shown in its place. */
+  errorText?: string;
 }
 
 const STATUS_LABEL: Record<AnswerStatus, string | null> = {
@@ -51,6 +53,7 @@ export const MessageStream: React.FC<MessageStreamProps> = ({
   sources = [],
   suggestions = [],
   onSuggestionClick,
+  errorText,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -64,6 +67,16 @@ export const MessageStream: React.FC<MessageStreamProps> = ({
       console.error('Failed to copy response:', err);
     }
   };
+
+  // A reply that ended without text (the server failed or it was stopped):
+  // say so instead of showing the loader forever.
+  if (!content && !isStreaming) {
+    return (
+      <div className="w-full max-w-2xl mr-auto text-xs sm:text-sm text-rose-700 py-4 px-5 rounded-2xl bg-rose-50 border border-rose-200">
+        {errorText || 'No answer was received. Please try again.'}
+      </div>
+    );
+  }
 
   if (!content) {
     return (

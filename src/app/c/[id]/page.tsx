@@ -174,6 +174,7 @@ function SavedChatPageInner() {
     if (!chatId) return;
 
     let isMounted = true;
+    let sendTimer: ReturnType<typeof setTimeout> | undefined;
 
     async function loadChat() {
       // The first response is still being persisted by the backend. Do not
@@ -191,20 +192,26 @@ function SavedChatPageInner() {
         if (rawPending) {
           try {
             const pending = JSON.parse(rawPending) as { prompt: string; filters?: SearchFilterState };
-            window.sessionStorage.removeItem(pendingKey);
             if (pending.filters) {
               setFilters(pending.filters);
             }
             if (!initialSentRef.current && pending.prompt) {
-              initialSentRef.current = true;
-              initialRequestStartedRef.current = true;
               setIsLoadingSaved(false);
-              sendMessage(
-                { text: pending.prompt },
-                { body: { filters: toChatFilters(pending.filters ?? DEFAULT_FILTERS) } }
-              );
+              // Sent one tick later and cancelled on cleanup: in dev, Strict
+              // Mode runs this effect twice and the first run's message was
+              // lost, so the student's first question never got an answer.
+              sendTimer = setTimeout(() => {
+                window.sessionStorage.removeItem(pendingKey);
+                initialSentRef.current = true;
+                initialRequestStartedRef.current = true;
+                sendMessage(
+                  { text: pending.prompt },
+                  { body: { filters: toChatFilters(pending.filters ?? DEFAULT_FILTERS) } }
+                );
+              }, 0);
               return;
             }
+            window.sessionStorage.removeItem(pendingKey);
           } catch {
             window.sessionStorage.removeItem(pendingKey);
           }
@@ -245,6 +252,7 @@ function SavedChatPageInner() {
 
     return () => {
       isMounted = false;
+      if (sendTimer) clearTimeout(sendTimer);
     };
   }, [chatId, sendMessage, setMessages, showToast]);
 
@@ -331,6 +339,7 @@ function SavedChatPageInner() {
                   sources={getMessageSources(message)}
                   suggestions={isLast ? message.metadata?.suggestions : undefined}
                   onSuggestionClick={handleSuggestionClick}
+                  errorText={isLast && error ? chatErrorText(error) : undefined}
                 />
               );
             }
