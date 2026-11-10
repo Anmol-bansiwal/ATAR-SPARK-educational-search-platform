@@ -65,17 +65,19 @@ export default function LandingPage() {
     const trimmed = filters.query.trim();
     if (!trimmed) return;
 
-    const params = new URLSearchParams();
-    params.set('q', trimmed);
-    if (filters.subject !== 'All') {
-      params.set('paper', filters.subject);
-      params.set('subject', filters.subject);
-    }
-    if (filters.timePeriod !== 'All Years') params.set('timePeriod', filters.timePeriod);
-    if (filters.difficulty !== 'All') params.set('difficulty', filters.difficulty);
-    if (filters.year !== 'All') params.set('year', String(filters.year));
+    const newChatId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `chat-${Date.now()}`;
 
-    router.push(`/chat?${params.toString()}`);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(
+        `edusearch.pendingPrompt.${newChatId}`,
+        JSON.stringify({ prompt: trimmed, filters })
+      );
+    }
+
+    router.push(`/c/${newChatId}`);
   };
 
   return (

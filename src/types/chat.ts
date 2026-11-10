@@ -18,7 +18,19 @@ export interface ChatMetadata {
   activeSubject?: string | null;
   kind?: string | null;
   answerOrigin?: AnswerOrigin;
+  transformation?: 'practice' | string | null;
   suggestions?: ChatSuggestion[];
+}
+
+export interface ChatSummary {
+  id: string; // UUID, the /c/<id> in the URL
+  title: string; // first question, <= 60 characters; "New chat" if none
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601, last reply
+}
+
+export interface SavedChat extends ChatSummary {
+  messages: StoredChatMessage[];
 }
 
 export interface QuestionItems {

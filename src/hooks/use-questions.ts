@@ -17,31 +17,14 @@ import type {
 export const MIN_SCORE = 0.3;
 
 /**
- * Fallback filter options when the backend is loading or unavailable.
- * Years are generated relative to the current date so this never rots.
+ * Initial empty filter state while live options load from GET /questions/filters.
  */
 export function getDefaultFilterOptions(): QuestionFiltersResponse {
-  const currentYear = new Date().getFullYear();
   return {
-    subjects: [
-      { value: 'Mathematics', count: 0 },
-      { value: 'Physics', count: 0 },
-      { value: 'Chemistry', count: 0 },
-    ],
-    years: Array.from({ length: 4 }, (_, i) => ({
-      value: currentYear - 1 - i,
-      count: 0,
-    })),
-    difficulties: [
-      { value: 'EASY', count: 0 },
-      { value: 'MEDIUM', count: 0 },
-      { value: 'HARD', count: 0 },
-    ],
-    timePeriods: [
-      { label: 'Last 3 Years', yearFrom: currentYear - 2, yearTo: currentYear, count: 0 },
-      { label: 'Last 5 Years', yearFrom: currentYear - 4, yearTo: currentYear, count: 0 },
-      { label: 'Last 10 Years', yearFrom: currentYear - 9, yearTo: currentYear, count: 0 },
-    ],
+    subjects: [],
+    years: [],
+    difficulties: [],
+    timePeriods: [],
     total: 0,
   };
 }

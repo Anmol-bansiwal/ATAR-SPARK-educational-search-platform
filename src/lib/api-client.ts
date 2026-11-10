@@ -15,6 +15,8 @@ import type {
   DifficultyLevel,
   ApiDifficulty,
 } from '../types/question';
+import type { ChatSummary, SavedChat } from '../types/chat';
+import { getChatKey } from './chat-key';
 
 /**
  * Custom API Error containing HTTP status code and message.
@@ -31,10 +33,19 @@ export class ApiError extends Error {
 
 /**
  * Returns the backend API base URL.
- * Defaults to http://localhost:3000 (Nest with /api/chat). Override via NEXT_PUBLIC_API_URL.
+ * In browser context, routes securely through the same-origin proxy (/api/backend)
+ * so private backend URLs and secret tokens are never exposed in client bundles.
  */
 export function getApiBaseUrl(): string {
-  const url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').trim();
+  // Client browser context
+  if (typeof window !== 'undefined') {
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL.trim().replace(/\/+$/, '');
+    }
+    return '/api/backend';
+  }
+  // Server-side (Node.js/Next.js SSR)
+  const url = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').trim();
   return url.replace(/\/+$/, '');
 }
 
@@ -89,6 +100,7 @@ async function request<T>(
   }
 
   try {
+    const chatKey = getChatKey();
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
@@ -96,6 +108,7 @@ async function request<T>(
         'Content-Type': 'application/json',
         // Required when NEXT_PUBLIC_API_URL is an ngrok tunnel
         'ngrok-skip-browser-warning': 'true',
+        ...(chatKey ? { 'X-Chat-Key': chatKey } : {}),
         ...(options.headers || {}),
       },
     });
@@ -325,7 +338,60 @@ export const apiClient = {
       return [];
     }
   },
+
+  /**
+   * GET /api/chats - Fetch this browser's saved chats for the sidebar
+   */
+  async listChats(signal?: AbortSignal): Promise<{ chats: ChatSummary[] }> {
+    return request<{ chats: ChatSummary[] }>('/api/chats', { method: 'GET', signal }, TIMEOUTS.filters);
+  },
+
+  /**
+   * GET /api/chats/:id - Reopen one saved chat with its full messages array
+   */
+  async getChat(id: string, signal?: AbortSignal): Promise<SavedChat> {
+    return request<SavedChat>(`/api/chats/${encodeURIComponent(id)}`, { method: 'GET', signal }, TIMEOUTS.filters);
+  },
+
+  /**
+   * DELETE /api/chats/:id - Delete a saved chat (204 No Content)
+   */
+  async deleteChat(id: string, signal?: AbortSignal): Promise<void> {
+    const baseUrl = getApiBaseUrl();
+    const url = `${baseUrl}/api/chats/${encodeURIComponent(id)}`;
+    const chatKey = getChatKey();
+    const res = await fetch(url, {
+      method: 'DELETE',
+      signal,
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+        ...(chatKey ? { 'X-Chat-Key': chatKey } : {}),
+      },
+    });
+    if (!res.ok && res.status !== 404) {
+      let msg = `Failed to delete chat (${res.status})`;
+      try {
+        const body = await res.json();
+        msg = body.error || body.message || msg;
+      } catch {
+        // ignore non-json
+      }
+      throw new ApiError(msg, res.status);
+    }
+  },
 };
+
+/**
+ * Extracts friendly error string from useChat transport or API error bodies.
+ */
+export function chatErrorText(error: Error): string {
+  try {
+    const parsed = JSON.parse(error.message) as { error?: string; message?: string };
+    return parsed.error ?? parsed.message ?? error.message;
+  } catch {
+    return error.message;
+  }
+}
 
 /**
  * Maps UI difficulty ('Easy' | 'Medium' | 'Hard') to the REST uppercase enum.
