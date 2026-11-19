@@ -261,6 +261,14 @@ function SavedChatPageInner() {
   // Display transport errors
   useEffect(() => {
     if (error) {
+      try {
+        const parsed = JSON.parse(error.message);
+        if (parsed?.requestId) {
+          console.info(`[Chat] Server Request-ID: ${parsed.requestId}`);
+        }
+      } catch {
+        // Non-JSON error
+      }
       console.error('[Chat Stream Error]:', error);
       showToast(chatErrorText(error), 'error');
     }

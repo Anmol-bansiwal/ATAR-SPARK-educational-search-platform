@@ -24,11 +24,13 @@ import { getBackendBaseUrl } from '../config/api';
  */
 export class ApiError extends Error {
   statusCode: number;
+  requestId?: string;
 
-  constructor(message: string, statusCode: number = 500) {
+  constructor(message: string, statusCode: number = 500, requestId?: string) {
     super(message);
     this.name = 'ApiError';
     this.statusCode = statusCode;
+    this.requestId = requestId;
   }
 }
 
@@ -115,10 +117,16 @@ async function request<T>(
 
     clearTimeout(timeoutId);
 
+    const requestId = response.headers.get('x-request-id') || undefined;
+
+    if (response.status === 429) {
+      throw new ApiError('Please wait a moment and try again.', 429, requestId);
+    }
+
     if (!response.ok) {
       let errorMessage = `Request failed with status ${response.status}`;
       try {
-        const errorData: { message?: string | string[]; error?: string } = await response.json();
+        const errorData: { message?: string | string[]; error?: string; requestId?: string } = await response.json();
         const msg = errorData.message;
         errorMessage = Array.isArray(msg)
           ? msg[0] || 'Validation error'
@@ -127,7 +135,7 @@ async function request<T>(
         // Body wasn't JSON — fall back to status text
         errorMessage = response.statusText || errorMessage;
       }
-      throw new ApiError(errorMessage, response.status);
+      throw new ApiError(errorMessage, response.status, requestId);
     }
 
     return (await response.json()) as T;
@@ -386,9 +394,21 @@ export const apiClient = {
  */
 export function chatErrorText(error: Error): string {
   try {
-    const parsed = JSON.parse(error.message) as { error?: string; message?: string };
+    const parsed = JSON.parse(error.message) as {
+      error?: string;
+      message?: string;
+      statusCode?: number;
+      status?: number;
+      requestId?: string;
+    };
+    if (parsed.statusCode === 429 || parsed.status === 429 || error.message.includes('429')) {
+      return 'Please wait a moment and try again.';
+    }
     return parsed.error ?? parsed.message ?? error.message;
   } catch {
+    if (error.message.includes('429')) {
+      return 'Please wait a moment and try again.';
+    }
     return error.message;
   }
 }

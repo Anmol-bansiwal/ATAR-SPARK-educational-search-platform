@@ -67,6 +67,19 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
     const cacheControl = backendRes.headers.get('cache-control');
     if (cacheControl) responseHeaders.set('cache-control', cacheControl);
 
+    const requestId = backendRes.headers.get('x-request-id');
+    if (requestId) {
+      responseHeaders.set('x-request-id', requestId);
+      responseHeaders.set('access-control-expose-headers', 'x-request-id');
+    }
+
+    if (backendRes.status === 429) {
+      return NextResponse.json(
+        { error: 'Please wait a moment and try again.', requestId: requestId || undefined },
+        { status: 429, headers: responseHeaders }
+      );
+    }
+
     const data = await backendRes.arrayBuffer();
     return new NextResponse(data, {
       status: backendRes.status,

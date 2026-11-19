@@ -48,19 +48,41 @@ export async function POST(req: Request) {
 
     clearTimeout(connectionTimeout);
 
+    const requestId = backendResponse.headers.get('x-request-id');
+
     if (backendResponse.ok && backendResponse.body) {
+      const responseHeaders: Record<string, string> = {
+        'Content-Type':
+          backendResponse.headers.get('Content-Type') ||
+          'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        'x-vercel-ai-ui-message-stream':
+          backendResponse.headers.get('x-vercel-ai-ui-message-stream') || 'v1',
+      };
+      if (requestId) {
+        responseHeaders['X-Request-Id'] = requestId;
+        responseHeaders['Access-Control-Expose-Headers'] = 'X-Request-Id';
+      }
+
       return new Response(backendResponse.body, {
         status: backendResponse.status,
-        headers: {
-          'Content-Type':
-            backendResponse.headers.get('Content-Type') ||
-            'text/event-stream; charset=utf-8',
-          'Cache-Control': 'no-cache, no-transform',
-          Connection: 'keep-alive',
-          'x-vercel-ai-ui-message-stream':
-            backendResponse.headers.get('x-vercel-ai-ui-message-stream') || 'v1',
-        },
+        headers: responseHeaders,
       });
+    }
+
+    // Rate limits (handle 429) - show friendly cooldown message
+    if (backendResponse.status === 429) {
+      console.warn(`[api/chat] Rate limited (429) from backend. Request-ID: ${requestId || 'N/A'}`);
+      const errHeaders: Record<string, string> = {};
+      if (requestId) {
+        errHeaders['X-Request-Id'] = requestId;
+        errHeaders['Access-Control-Expose-Headers'] = 'X-Request-Id';
+      }
+      return Response.json(
+        { error: 'Please wait a moment and try again.', requestId },
+        { status: 429, headers: errHeaders }
+      );
     }
 
     // Preserve backend structured error responses ({ error: "...", issues: [...] }) per FRONTEND_API.md §8.4
@@ -69,25 +91,39 @@ export async function POST(req: Request) {
       const errJson = await backendResponse.json().catch(() => null);
       if (errJson && typeof errJson === 'object') {
         console.error(
-          `[api/chat] Backend ${backendResponse.status} from ${backendBaseUrl}/api/chat`,
+          `[api/chat] Backend ${backendResponse.status} from ${backendBaseUrl}/api/chat (Request-ID: ${requestId || 'N/A'})`,
           errJson
         );
-        return Response.json(errJson, { status: backendResponse.status });
+        const errHeaders: Record<string, string> = {};
+        if (requestId) {
+          errHeaders['X-Request-Id'] = requestId;
+          errHeaders['Access-Control-Expose-Headers'] = 'X-Request-Id';
+        }
+        return Response.json(
+          { ...errJson, ...(requestId ? { requestId } : {}) },
+          { status: backendResponse.status, headers: errHeaders }
+        );
       }
     }
 
     const errText = await backendResponse.text().catch(() => '');
     console.error(
-      `[api/chat] Backend ${backendResponse.status} from ${backendBaseUrl}/api/chat: ${errText.slice(0, 500)}`
+      `[api/chat] Backend ${backendResponse.status} from ${backendBaseUrl}/api/chat (Request-ID: ${requestId || 'N/A'}): ${errText.slice(0, 500)}`
     );
+    const errHeaders: Record<string, string> = {};
+    if (requestId) {
+      errHeaders['X-Request-Id'] = requestId;
+      errHeaders['Access-Control-Expose-Headers'] = 'X-Request-Id';
+    }
     return Response.json(
       {
         error:
           backendResponse.status === 400
             ? 'Invalid question query or filter format.'
             : 'The AI assistant encountered an issue while generating a response. Please try again.',
+        ...(requestId ? { requestId } : {}),
       },
-      { status: backendResponse.status >= 400 ? backendResponse.status : 502 }
+      { status: backendResponse.status >= 400 ? backendResponse.status : 502, headers: errHeaders }
     );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';

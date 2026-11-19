@@ -20,6 +20,7 @@ export interface ChatMetadata {
   answerOrigin?: AnswerOrigin;
   transformation?: 'practice' | string | null;
   suggestions?: ChatSuggestion[];
+  queryLogId?: string | null;
 }
 
 export interface ChatSummary {
